@@ -7,6 +7,8 @@ export type Service = {
   shortTitle: string;
   icon: IconName;
   summary: string;
+  /** Meta description for search results, 110 to 160 characters. */
+  seoDescription: string;
   lead: string;
   questions: string[];
   offerings: { title: string; detail: string }[];
@@ -28,6 +30,8 @@ export const services: Service[] = [
     icon: "trending-up",
     summary:
       "Understand markets, customers and competitors so that commercial decisions rest on evidence rather than assumption.",
+    seoDescription:
+      "Market research in Zambia: market sizing, segmentation, customer satisfaction and NPS, brand health, pricing and product testing.",
     lead: "Whether you are entering a new market, launching a product or defending your share, we give you a clear view of the people you sell to and the forces that shape their choices.",
     questions: [
       "How big is the opportunity, and which segments should we prioritise?",
@@ -106,6 +110,8 @@ export const services: Service[] = [
     icon: "megaphone",
     summary:
       "Measure what the public thinks, experiences and expects, with samples designed to represent the people they describe.",
+    seoDescription:
+      "Public opinion polls and social surveys in Zambia: representative samples, citizen satisfaction, household, KAP and media audience research.",
     lead: "Credible public opinion research depends on two things: a sample that truly represents the population, and questions that do not lead the answer. We take both seriously.",
     questions: [
       "What do citizens think about a policy, a service or an issue, and how strongly?",
@@ -181,6 +187,8 @@ export const services: Service[] = [
     shortTitle: "Monitoring and evaluation",
     icon: "clipboard-check",
     summary: "Research for programmes that need to show what changed, for whom, and why.",
+    seoDescription:
+      "Monitoring and evaluation in Zambia: baseline, midline and endline surveys, impact evaluations, theories of change and third-party monitoring.",
     lead: "Donors, governments and implementing partners need evidence that stands up to scrutiny. We design and deliver monitoring and evaluation that is rigorous, practical and reported to partner standards.",
     questions: [
       "What is the starting point before our programme begins?",
@@ -252,6 +260,8 @@ export const services: Service[] = [
     shortTitle: "Policy and economic research",
     icon: "landmark",
     summary: "Evidence for government, regulators, associations and investors.",
+    seoDescription:
+      "Policy, economic and sector research in Zambia: feasibility studies, cost-benefit analysis, value chains and regulatory impact assessments.",
     lead: "Policy and investment decisions carry real consequences. We bring economic analysis, sector knowledge and structured consultation together to show what is likely to happen, and what it will cost.",
     questions: [
       "Is this project feasible, and do its benefits justify its costs?",
@@ -323,6 +333,8 @@ export const services: Service[] = [
     shortTitle: "Data collection and fieldwork",
     icon: "monitor-smartphone",
     summary: "Our own trained field teams, managed end to end.",
+    seoDescription:
+      "Data collection in Zambia: CAPI, CATI, online and SMS surveys, focus groups and interviews, delivered by trained field teams with daily quality checks.",
     lead: "Good analysis cannot rescue bad data. We recruit, train and supervise our own field teams, and we check quality while fieldwork is still under way, not after it has finished.",
     questions: [
       "How do we reach a representative sample across urban and rural districts?",
@@ -398,6 +410,8 @@ export const services: Service[] = [
     shortTitle: "Data analysis and reporting",
     icon: "chart-combined",
     summary: "Turning raw data into findings that people can act on.",
+    seoDescription:
+      "Data analysis and reporting: data cleaning, statistics in SPSS, Stata, R and Python, qualitative analysis, dashboards and clear research reports.",
     lead: "We clean, analyse and interpret data with methods that fit the question, then present the results so that a busy reader understands them in minutes.",
     questions: [
       "What does our data actually show, and how confident can we be?",
@@ -460,6 +474,8 @@ export const services: Service[] = [
     icon: "graduation-cap",
     summary:
       "Helping researchers at every stage, from first degree to doctorate and beyond, do their own research well.",
+    seoDescription:
+      "Academic research support in Zambia: research design, ethics applications, statistical analysis, interpretation and editing for theses and papers.",
     lead: "We support students, academics and research units with methods, analysis and writing, always in a way that builds your own understanding and respects your institution's rules on academic integrity.",
     questions: [
       "Is my research design strong enough to answer my question?",
@@ -538,6 +554,8 @@ export const services: Service[] = [
     shortTitle: "Research training",
     icon: "presentation",
     summary: "Building research skills inside organisations and universities.",
+    seoDescription:
+      "Research training in Zambia: practical courses in research methods, survey design, SPSS, Stata, R, NVivo, monitoring and evaluation and Power BI.",
     lead: "We train teams to design, collect, analyse and use data themselves. Every course is practical, built around real datasets and the software your team actually uses.",
     questions: [
       "How do we build an in-house team that can run its own surveys?",

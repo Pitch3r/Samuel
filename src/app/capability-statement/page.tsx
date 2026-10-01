@@ -46,7 +46,7 @@ export default function CapabilityStatementPage() {
         <header className="flex items-start justify-between gap-6 border-b border-mist pb-6">
           <Logo width={220} priority />
           <div className="text-right">
-            <p className="font-display text-xl font-bold text-navy">Capability statement</p>
+            <h1 className="font-display text-xl font-bold text-navy">Capability statement</h1>
             <p className="mt-1 text-xs text-slate">{today}</p>
           </div>
         </header>

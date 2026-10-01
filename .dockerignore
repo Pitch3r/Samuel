@@ -1,0 +1,12 @@
+.git
+.next
+node_modules
+data
+*.db
+.env*
+!.env.example
+test-results
+playwright-report
+coverage
+Dockerfile
+.dockerignore

@@ -5,6 +5,7 @@ import { site } from "@/config/site";
 import { getDb, schema } from "@/lib/db";
 import { emailLayout, fieldsTable, fieldsText, sendMail, teamInbox } from "@/lib/email";
 import { rateLimit } from "@/lib/rate-limit";
+import { looksLikeSpam, minFillTime } from "@/lib/spam";
 import { clientIp, createReference, escapeHtml, hashIp } from "@/lib/request";
 import { describePayload, kindLabels, messageFor, subjectFor } from "@/lib/submission-fields";
 import { fieldErrorsFrom, type ApiResult, type SubmissionKind } from "@/lib/validation";
@@ -34,16 +35,6 @@ export async function readJson(request: Request): Promise<{ ok: true; data: unkn
   } catch {
     return { ok: false, response: json({ ok: false, error: "bad_request", message: "We could not read that submission." }, 400) };
   }
-}
-
-/** True when the request looks automated: honeypot filled or submitted implausibly fast. */
-export function looksLikeSpam(data: { company_website?: string; startedAt?: number }, minFillMs: number) {
-  if (data.company_website && data.company_website.trim() !== "") return true;
-  if (typeof data.startedAt === "number" && data.startedAt > 0) {
-    const elapsed = Date.now() - data.startedAt;
-    if (elapsed >= 0 && elapsed < minFillMs) return true;
-  }
-  return false;
 }
 
 function stripMeta<T extends Record<string, unknown>>(data: T) {
@@ -168,7 +159,7 @@ export async function handleSubmission<S extends z.ZodType<Record<string, unknow
   };
   const reference = createReference();
 
-  if (looksLikeSpam(data, minFillMs)) {
+  if (looksLikeSpam(data, minFillTime(minFillMs))) {
     // Answer like a success so automated senders learn nothing.
     return json({ ok: true, reference, message: "Thank you." });
   }

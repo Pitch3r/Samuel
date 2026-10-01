@@ -57,3 +57,18 @@ export function initials(name: string) {
     .map((part) => part[0]?.toUpperCase() ?? "")
     .join("");
 }
+
+/** Meta description within the ~160 characters search engines display: whole sentences where possible. */
+export function metaDescription(...parts: string[]) {
+  const text = parts.join(" ").replace(/\s+/g, " ").trim();
+  if (text.length <= 160) return text;
+  const sentences = text.match(/[^.!?]+[.!?]+/g) ?? [text];
+  let out = "";
+  for (const sentence of sentences) {
+    const next = `${out} ${sentence.trim()}`.trim();
+    if (next.length > 160) break;
+    out = next;
+  }
+  if (out.length >= 110) return out;
+  return `${text.slice(0, 156).replace(/\s+\S*$/, "").replace(/[,;:]$/, "")}...`;
+}

@@ -2,7 +2,8 @@ import { after } from "next/server";
 import { subscribe, sendWelcome } from "@/lib/newsletter";
 import { rateLimit } from "@/lib/rate-limit";
 import { clientIp } from "@/lib/request";
-import { json, looksLikeSpam, readJson } from "@/lib/submissions";
+import { looksLikeSpam, minFillTime } from "@/lib/spam";
+import { json, readJson } from "@/lib/submissions";
 import { fieldErrorsFrom, newsletterSchema } from "@/lib/validation";
 
 export async function POST(request: Request) {
@@ -26,7 +27,7 @@ export async function POST(request: Request) {
     );
   }
 
-  if (looksLikeSpam(parsed.data, 1200)) {
+  if (looksLikeSpam(parsed.data, minFillTime(1200))) {
     return json({ ok: true, message: "You are subscribed. Thank you." });
   }
 

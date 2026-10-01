@@ -5,6 +5,9 @@
  *   n  = n0 / (1 + (n0 - 1) / N)               (finite population correction)
  *   n  = n * deff                              (design effect, e.g. clustering)
  *   n  = n / responseRate                      (allow for non-response)
+ *
+ * Each stage is rounded up before the next, the conservative convention used
+ * in our guidance (385 completes with a design effect of 2 becomes 770).
  */
 
 export const confidenceLevels = [
@@ -67,7 +70,7 @@ export function sampleSize({
   const z = zFor(confidence);
   const n0 = (z * z * proportion * (1 - proportion)) / (marginOfError * marginOfError);
   const finite = population && Number.isFinite(population) && population > 0;
-  const corrected = finite ? n0 / (1 + (n0 - 1) / population) : n0;
+  const corrected = ceilClean(finite ? n0 / (1 + (n0 - 1) / population) : n0);
   const completes = ceilClean(corrected * designEffect);
   const capped = finite ? Math.min(completes, Math.ceil(population)) : completes;
 

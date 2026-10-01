@@ -13,7 +13,7 @@ import { Container, Section } from "@/components/ui/container";
 import { site } from "@/config/site";
 import { getPublishedArticle, listPublishedArticles, listRelatedArticles } from "@/lib/articles";
 import { renderMarkdown } from "@/lib/markdown";
-import { absoluteUrl, formatDate } from "@/lib/utils";
+import { absoluteUrl, formatDate, metaDescription } from "@/lib/utils";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -28,21 +28,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const article = await getPublishedArticle(slug);
   if (!article) return { title: "Article not found" };
+  const description = metaDescription(article.excerpt);
   return {
     title: article.title,
-    description: article.excerpt,
+    description,
     alternates: { canonical: `/insights/${article.slug}` },
     openGraph: {
       type: "article",
       title: article.title,
-      description: article.excerpt,
+      description,
       url: `/insights/${article.slug}`,
       publishedTime: article.publishedAt,
       modifiedTime: article.updatedAt,
       authors: [article.author],
       section: article.category,
     },
-    twitter: { card: "summary_large_image", title: article.title, description: article.excerpt },
+    twitter: { card: "summary_large_image", title: article.title, description },
   };
 }
 
