@@ -32,19 +32,44 @@ It is a full-stack Next.js application: a fast, accessible marketing site built 
 - Newsletter subscriber management and export
 - Insights editor: write in Markdown, preview exactly as published, save drafts, publish, feature or delete articles
 
-## Getting started
+## Run it on your computer
 
-Requirements: Node.js 20.9 or newer (22 recommended).
+You need **Node.js 20.9 or newer**. If you do not have it, install the LTS version (22 is recommended) from https://nodejs.org, then open a new terminal window.
+
+1. Unzip the project (or clone it) and open a terminal in its folder:
+   - **Windows:** open the folder in File Explorer, click the address bar, type `cmd` and press Enter.
+   - **Mac:** open Terminal, type `cd ` (with a space after it), drag the folder onto the window and press Return.
+2. Install the dependencies. This is needed once and takes about a minute:
+   ```bash
+   npm install
+   ```
+3. Start the website:
+   ```bash
+   npm run dev
+   ```
+4. Open http://localhost:3000 in your browser. To stop the website, press `Ctrl` + `C` in the terminal.
+
+The admin dashboard is at http://localhost:3000/admin. Until you set your own admin details, sign in with `admin@primeresearch.local` and the password `change-me-now`. These defaults only work in development.
+
+The database file is created automatically in `./data` on first use, with the six launch articles already published. Without email settings, form submissions are still saved and listed in the dashboard; the emails are skipped and a note is printed in the terminal.
+
+### Full-speed preview
+
+`npm run dev` prepares each page the first time you open it, so first visits are slow. To run the site the way it will run in production:
 
 ```bash
-npm install
-cp .env.example .env.local   # optional in development
-npm run dev
+npm run setup     # once: creates .env.local with your own admin password
+npm run preview   # builds the site, then serves it at http://localhost:3000
 ```
 
-Open http://localhost:3000. The admin dashboard is at http://localhost:3000/admin. In development, if you have not set `ADMIN_EMAIL` and `ADMIN_PASSWORD`, you can sign in with `admin@primeresearch.local` / `change-me-now`. These defaults are disabled in production.
+`npm run setup` prints the admin email and password it created. It never overwrites an existing `.env.local`; edit that file to change any setting (see [Environment variables](#environment-variables)). Once `.env.local` contains an admin password, use that password in development too.
 
-The database file is created automatically in `./data` on first use, with the six launch articles already published.
+### If something goes wrong
+
+- **"npm is not recognized" or "command not found":** Node.js is not installed yet, or the terminal was opened before installing it. Install Node.js, then open a new terminal.
+- **Port 3000 is busy:** `npm run dev` moves to the next free port by itself and prints the address to open. For the preview, choose a port yourself with `npm run preview -- -p 3001` and open http://localhost:3001.
+- **"Admin login is not configured":** in a production build the development defaults are switched off. Run `npm run setup`, then start the site again.
+- **Start again with an empty database:** stop the site and delete the `data` folder. It is recreated with the launch articles on the next start.
 
 ## Editing the content
 

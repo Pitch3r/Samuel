@@ -1,6 +1,6 @@
 import "server-only";
 import { createHash, timingSafeEqual } from "node:crypto";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { SESSION_COOKIE, SESSION_HOURS, sessionKey, signSession, verifySessionToken } from "@/lib/session-token";
 
@@ -44,12 +44,24 @@ export function checkCredentials(email: string, password: string) {
   return emailOk && passwordOk;
 }
 
+/**
+ * The session cookie is marked Secure whenever the admin page was loaded over HTTPS. The browser's
+ * Origin header (which Server Actions always carry) reports that scheme even behind a proxy, and it
+ * lets a production build previewed at http://localhost keep its cookie in browsers that do not
+ * exempt localhost from the Secure rule.
+ */
+async function secureCookie() {
+  const origin = (await headers()).get("origin");
+  if (origin) return origin.startsWith("https://");
+  return process.env.NODE_ENV === "production";
+}
+
 export async function createSession() {
   const token = await signSession();
   const store = await cookies();
   store.set(SESSION_COOKIE, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: await secureCookie(),
     sameSite: "lax",
     path: "/admin",
     maxAge: SESSION_HOURS * 60 * 60,
