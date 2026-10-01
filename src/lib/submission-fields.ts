@@ -12,10 +12,10 @@ export const kindLabels: Record<SubmissionKind, string> = {
 const fieldLabels: Record<string, string> = {
   enquiryType: "Enquiry type",
   message: "Message",
-  goal: "What they need to know",
+  goal: "Goal",
   services: "Areas of interest",
   decision: "Decision to inform",
-  audience: "Who to hear from",
+  audience: "Audience",
   geography: "Where",
   timeline: "Timeline",
   budget: "Budget band",
@@ -29,10 +29,10 @@ const fieldLabels: Record<string, string> = {
   provinces: "Provinces available",
   languages: "Languages",
   education: "Highest qualification",
-  experience: "Field experience",
-  capiExperience: "Used CAPI tools",
+  experience: "Years of experience",
+  capiExperience: "CAPI tools experience",
   cvUrl: "CV or profile link",
-  statement: "About their experience",
+  statement: "Summary of experience",
   location: "Based in",
 };
 

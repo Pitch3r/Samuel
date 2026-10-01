@@ -54,7 +54,7 @@ export default async function DashboardPage() {
         <StatTile label="Published insights" value={data.publishedArticles} context={`${data.draftArticles} draft${data.draftArticles === 1 ? "" : "s"}`} />
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[1.6fr_1fr]">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         <Panel title="Submissions per day, last 30 days">
           <p className="-mt-2 mb-4 text-xs text-slate">Today is highlighted.</p>
           <BarChart data={series} height={240} xLabelEvery={5} ariaLabel="Website submissions per day over the last 30 days" tableCaption="Submissions per day" />

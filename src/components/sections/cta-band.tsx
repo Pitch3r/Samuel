@@ -16,7 +16,7 @@ export function CtaBand({
     <section aria-labelledby="cta-heading" className="relative bg-white py-20 sm:py-24">
       <Container>
         <Reveal>
-          <div className="on-dark relative isolate overflow-hidden rounded-[2rem] bg-navy px-7 py-14 text-white sm:px-14 sm:py-16 lg:px-20 lg:py-20">
+          <div className="on-dark relative isolate overflow-hidden rounded-[2rem] bg-navy px-5 py-12 text-white min-[380px]:px-7 sm:px-14 sm:py-16 lg:px-20 lg:py-20">
             <div aria-hidden="true" className="bg-grid-dark absolute inset-0 -z-10 opacity-50" />
             <PrimeArc
               tone="dark"

@@ -22,6 +22,13 @@ export default defineConfig({
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"], viewport: { width: 1440, height: 900 } } },
     { name: "mobile", use: { ...devices["Pixel 7"] }, testMatch: /pages\.spec\.ts/ },
+    // The narrowest phones still in use: every page must fit without sideways scrolling.
+    {
+      name: "small-phone",
+      use: { ...devices["Pixel 7"], viewport: { width: 320, height: 640 } },
+      testMatch: /pages\.spec\.ts/,
+      grep: /renders cleanly/,
+    },
   ],
   webServer: {
     command: `rm -rf .e2e-data && npm run build && npx next start -p ${port}`,

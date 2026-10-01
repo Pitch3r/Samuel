@@ -98,3 +98,12 @@ describe("metaDescription", async () => {
     expect(result.length).toBeGreaterThan(100);
   });
 });
+
+describe("cn", async () => {
+  const { cn } = await import("@/lib/utils");
+  it("keeps brand type sizes alongside colours", () => {
+    expect(cn("text-h1 text-white")).toBe("text-h1 text-white");
+    expect(cn("text-lead text-slate")).toBe("text-lead text-slate");
+    expect(cn("text-h2", "text-h3")).toBe("text-h3");
+  });
+});

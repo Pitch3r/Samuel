@@ -65,9 +65,9 @@ export default function ContactPage() {
                         <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-white/10">
                           <Icon className="size-[1.1rem] text-white" strokeWidth={1.75} aria-hidden="true" />
                         </span>
-                        <span>
+                        <span className="min-w-0">
                           <span className="block text-xs text-white/55">{item.label}</span>
-                          <span className="mt-0.5 block text-sm leading-relaxed text-white">{item.value}</span>
+                          <span className="mt-0.5 block text-sm leading-relaxed [overflow-wrap:anywhere] text-white">{item.value}</span>
                         </span>
                       </>
                     );

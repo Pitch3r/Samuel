@@ -7,11 +7,9 @@ export function ClientStrip() {
   return (
     <section aria-label="Who we work with" className="border-b border-mist bg-white py-10">
       <Container size="wide">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-12">
-          <p className="shrink-0 font-display text-xs font-bold tracking-[0.18em] text-slate uppercase lg:w-40">
-            Research for
-          </p>
-          <Stagger as="ul" className="grid flex-1 grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3 xl:grid-cols-6" stagger={0.05}>
+        <div className="flex flex-col gap-6">
+          <p className="font-display text-xs font-bold tracking-[0.18em] text-slate uppercase">Research for</p>
+          <Stagger as="ul" className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3 xl:grid-cols-6" stagger={0.05}>
             {clientTypes.map((client) => {
               return (
                 <StaggerItem as="li" key={client.title} className="flex items-center gap-3">

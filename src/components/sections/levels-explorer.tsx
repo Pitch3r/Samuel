@@ -13,7 +13,7 @@ export function LevelsExplorer() {
 
   return (
     <div>
-      <div role="tablist" aria-label="Research at every level" className="inline-flex flex-wrap gap-1 rounded-full border border-white/10 bg-white/[0.04] p-1.5">
+      <div role="tablist" aria-label="Research at every level" className="grid grid-cols-2 gap-1 rounded-[1.4rem] border border-white/10 bg-white/[0.04] p-1.5 sm:inline-flex sm:rounded-full">
         {researchLevels.map((item, index) => (
           <button
             key={item.key}

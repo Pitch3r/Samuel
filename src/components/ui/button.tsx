@@ -13,10 +13,11 @@ const variants = {
   link: "px-0 text-blue hover:text-navy",
 } as const;
 
+// Minimum rather than fixed heights, so a long label can wrap on a very narrow phone instead of overflowing.
 const sizes = {
-  sm: "h-9 gap-1.5 px-4 text-sm",
-  md: "h-11 gap-2 px-5 text-[0.95rem]",
-  lg: "h-13 gap-2.5 px-7 text-base",
+  sm: "min-h-9 gap-1.5 px-4 py-1.5 text-sm",
+  md: "min-h-11 gap-2 px-5 py-2 text-[0.95rem]",
+  lg: "min-h-13 gap-2.5 px-7 py-2.5 text-base",
 } as const;
 
 export type ButtonVariant = keyof typeof variants;
@@ -32,9 +33,9 @@ export function buttonClasses({
   className?: string;
 }) {
   return cn(
-    "group/btn relative inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-full font-display font-semibold tracking-[-0.01em] transition-all duration-300 ease-out-expo disabled:pointer-events-none disabled:opacity-60",
+    "group/btn relative inline-flex shrink-0 items-center justify-center rounded-full text-center font-display font-semibold tracking-[-0.01em] transition-all duration-300 ease-out-expo disabled:pointer-events-none disabled:opacity-60 sm:whitespace-nowrap",
     sizes[size],
-    variant === "link" && "h-auto",
+    variant === "link" && "min-h-0 py-0",
     variants[variant],
     className,
   );

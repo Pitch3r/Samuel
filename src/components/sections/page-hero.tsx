@@ -36,7 +36,14 @@ export function PageHero({
       />
       <PrimeArc
         tone="dark"
-        className="-top-[18rem] -right-[20rem] -z-10 size-[44rem] sm:-right-[14rem] lg:-top-[16rem] lg:-right-[10rem] lg:size-[52rem]"
+        segmentSweep={0}
+        className="-top-[18rem] -right-[20rem] -z-10 size-[44rem] sm:-right-[14rem] lg:-top-[16rem] lg:-right-[10rem] lg:size-[52rem] xl:hidden"
+      />
+      <PrimeArc
+        tone="dark"
+        segmentStart={198}
+        segmentSweep={aside ? 0 : 44}
+        className="-top-[16rem] -right-[10rem] -z-10 hidden size-[52rem] xl:block"
       />
       <Container className={cn(aside && "grid gap-12 lg:grid-cols-[1.25fr_0.75fr] lg:items-end")}>
         <div className="max-w-3xl">

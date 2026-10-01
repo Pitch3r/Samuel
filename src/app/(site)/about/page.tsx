@@ -56,7 +56,7 @@ export default function AboutPage() {
             </div>
             <Reveal delay={0.1}>
               <div className="relative overflow-hidden rounded-[1.75rem] border border-mist bg-cloud p-8">
-                <PrimeArc tone="light" segmentStart={120} segmentSweep={50} hairline={false} className="-right-28 -bottom-28 size-72" />
+                <PrimeArc tone="light" segmentStart={120} segmentSweep={50} hairline={false} className="-right-32 -bottom-32 size-64" />
                 <BadgeCheck className="size-8 text-blue" strokeWidth={1.75} aria-hidden="true" />
                 <p className="mt-5 font-display text-xs font-bold tracking-[0.16em] text-slate uppercase">Registration</p>
                 <p className="mt-2 font-display text-2xl font-bold text-navy">{site.legal.isic}</p>

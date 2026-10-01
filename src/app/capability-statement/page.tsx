@@ -4,8 +4,8 @@ import { ArrowLeft, Check } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { PrintButton } from "@/components/capability/print-button";
 import { site } from "@/config/site";
-import { ethicsCommitments, processSteps, qualityProtocol } from "@/content/approach";
-import { reasons } from "@/content/company";
+import { deliverables, ethicsCommitments, processSteps, qualityProtocol } from "@/content/approach";
+import { capabilities, clientTypes, fieldLanguages, reasons } from "@/content/company";
 import { sectors } from "@/content/sectors";
 import { services } from "@/content/services";
 import { formatDate } from "@/lib/utils";
@@ -41,17 +41,17 @@ export default function CapabilityStatementPage() {
 
       <main
         id="main"
-        className="mx-auto max-w-[210mm] bg-white px-[14mm] py-[14mm] text-[10.5pt] leading-[1.5] text-charcoal shadow-lift print:max-w-none print:p-0 print:shadow-none"
+        className="mx-auto max-w-[210mm] bg-white px-5 py-8 text-[10.5pt] leading-[1.5] text-charcoal shadow-lift sm:px-[14mm] sm:py-[14mm] print:max-w-none print:p-0 print:shadow-none"
       >
-        <header className="flex items-start justify-between gap-6 border-b border-mist pb-6">
-          <Logo width={220} priority />
-          <div className="text-right">
+        <header className="flex flex-col items-start gap-4 border-b border-mist pb-6 sm:flex-row sm:justify-between sm:gap-6 print:flex-row print:justify-between">
+          <Logo width={220} priority className="w-[180px] sm:w-[220px] print:w-[220px]" />
+          <div className="sm:text-right print:text-right">
             <h1 className="font-display text-xl font-bold text-navy">Capability statement</h1>
             <p className="mt-1 text-xs text-slate">{today}</p>
           </div>
         </header>
 
-        <section className="mt-6 grid grid-cols-[1.55fr_1fr] gap-6">
+        <section className="mt-6 grid gap-6 sm:grid-cols-[1.55fr_1fr] print:grid-cols-[1.55fr_1fr]">
           <div>
             <p className="font-display text-[1.45rem] leading-snug font-bold text-navy">{site.aim}</p>
             <p className="mt-3">{site.intro}</p>
@@ -94,7 +94,7 @@ export default function CapabilityStatementPage() {
 
         <section className="mt-7">
           <Heading>Core services</Heading>
-          <ul className="mt-3 grid grid-cols-2 gap-x-6 gap-y-3">
+          <ul className="mt-3 grid gap-x-6 gap-y-3 sm:grid-cols-2 print:grid-cols-2">
             {services.map((service) => (
               <li key={service.slug} className="break-inside-avoid">
                 <p className="font-display font-bold text-navy">
@@ -107,7 +107,7 @@ export default function CapabilityStatementPage() {
           </ul>
         </section>
 
-        <section className="mt-7 grid grid-cols-2 gap-6">
+        <section className="mt-7 grid gap-6 sm:grid-cols-2 print:grid-cols-2">
           <div>
             <Heading>Method</Heading>
             <ol className="mt-3 space-y-1.5">
@@ -134,7 +134,7 @@ export default function CapabilityStatementPage() {
           </div>
         </section>
 
-        <section className="mt-7 grid grid-cols-2 gap-6 break-inside-avoid">
+        <section className="mt-7 grid gap-6 break-inside-avoid sm:grid-cols-2 print:grid-cols-2">
           <div>
             <Heading>Quality protocol</Heading>
             <ul className="mt-3 space-y-1 text-[9.5pt]">
@@ -163,9 +163,46 @@ export default function CapabilityStatementPage() {
           </div>
         </section>
 
+        <section className="mt-7 grid gap-6 break-inside-avoid sm:grid-cols-3 print:grid-cols-3">
+          <div>
+            <Heading>Who we work with</Heading>
+            <ul className="mt-3 space-y-1 text-[9.5pt]">
+              {clientTypes.map((client) => (
+                <li key={client.title} className="flex gap-2">
+                  <Check className="mt-0.5 size-3.5 shrink-0 text-blue" strokeWidth={2.5} aria-hidden="true" />
+                  {client.title}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <Heading>Our team</Heading>
+            <ul className="mt-3 space-y-1 text-[9.5pt]">
+              {capabilities.map((capability) => (
+                <li key={capability.title} className="flex gap-2">
+                  <Check className="mt-0.5 size-3.5 shrink-0 text-blue" strokeWidth={2.5} aria-hidden="true" />
+                  {capability.title}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-2 text-[8.5pt] text-slate">Fieldwork in {fieldLanguages.slice(0, -1).join(", ")} and {fieldLanguages.at(-1)}.</p>
+          </div>
+          <div>
+            <Heading>What you receive</Heading>
+            <ul className="mt-3 space-y-1 text-[9.5pt]">
+              {deliverables.map((item) => (
+                <li key={item.title} className="flex gap-2">
+                  <Check className="mt-0.5 size-3.5 shrink-0 text-blue" strokeWidth={2.5} aria-hidden="true" />
+                  {item.title}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
         <section className="mt-7 break-inside-avoid">
           <Heading>Why Primeresearch</Heading>
-          <ul className="mt-3 grid grid-cols-3 gap-x-5 gap-y-2.5 text-[9.5pt]">
+          <ul className="mt-3 grid gap-x-5 gap-y-2.5 text-[9.5pt] sm:grid-cols-3 print:grid-cols-3">
             {reasons.map((reason) => (
               <li key={reason.title}>
                 <p className="font-display font-bold text-navy">{reason.title}</p>
@@ -175,7 +212,7 @@ export default function CapabilityStatementPage() {
           </ul>
         </section>
 
-        <footer className="mt-8 flex items-center justify-between gap-6 rounded-xl bg-navy px-6 py-5 text-white break-inside-avoid">
+        <footer className="mt-8 flex flex-col gap-4 rounded-xl bg-navy px-6 py-5 text-white break-inside-avoid sm:flex-row sm:items-center sm:justify-between sm:gap-6 print:flex-row print:items-center print:justify-between">
           <div className="text-[9.5pt]">
             <p className="font-display text-base font-bold">Talk to us</p>
             <p className="mt-1 text-white/80">
@@ -185,7 +222,7 @@ export default function CapabilityStatementPage() {
               {site.contact.address.street}, {site.contact.address.city}, {site.contact.address.country}
             </p>
           </div>
-          <div className="text-right text-[9.5pt]">
+          <div className="text-[9.5pt] sm:text-right print:text-right">
             <p className="font-semibold">{site.url.replace(/^https?:\/\//, "")}</p>
             <p className="text-white/70">{site.tagline}</p>
           </div>

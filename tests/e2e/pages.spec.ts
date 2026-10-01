@@ -29,7 +29,8 @@ test("every page in the sitemap renders cleanly", async ({ page, request }) => {
       text: document.body.innerText,
       title: document.title,
       description: document.querySelector('meta[name="description"]')?.getAttribute("content") ?? "",
-      overflow: document.documentElement.scrollWidth - window.innerWidth,
+      // clientWidth stays at the device width even when a mobile browser zooms out to fit overflowing content.
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     }));
     expect.soft(DASHES.test(text), `${path} body contains a dash`).toBe(false);
     expect.soft(DASHES.test(title + description), `${path} metadata contains a dash`).toBe(false);

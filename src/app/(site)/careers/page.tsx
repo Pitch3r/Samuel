@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CircleCheck, ShieldCheck } from "lucide-react";
+import { PrimeArc } from "@/components/brand/prime-arc";
 import { CareersForm } from "@/components/forms/careers-form";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
 import { PageHero } from "@/components/sections/page-hero";
@@ -47,12 +48,18 @@ export default function CareersPage() {
                 <p className="mt-2 text-[0.95rem] leading-relaxed text-slate">{role.detail}</p>
               </StaggerItem>
             ))}
-            <StaggerItem className="on-dark flex flex-col justify-between rounded-card bg-navy p-7 text-white">
-              <p className="font-display text-xl leading-snug font-bold text-white">What we look for</p>
-              <p className="mt-3 text-sm leading-relaxed text-white/70">
-                Honesty, care with detail and respect for respondents matter more to us than years of experience. We train for the
-                rest.
-              </p>
+            <StaggerItem className="on-dark relative isolate flex flex-col justify-between gap-6 overflow-hidden rounded-card bg-navy p-7 text-white">
+              <PrimeArc tone="dark" segmentSweep={0} className="-right-32 -bottom-40 -z-10 size-80" />
+              <div>
+                <p className="font-display text-xl leading-snug font-bold text-white">What we look for</p>
+                <p className="mt-3 text-sm leading-relaxed text-white/70">
+                  Honesty, care with detail and respect for respondents matter more to us than years of experience. We train for the
+                  rest.
+                </p>
+              </div>
+              <ButtonLink href="#apply" variant="gold" size="sm" arrow className="self-start">
+                Register your interest
+              </ButtonLink>
             </StaggerItem>
           </Stagger>
         </Container>

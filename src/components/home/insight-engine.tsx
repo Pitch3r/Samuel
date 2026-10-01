@@ -7,9 +7,9 @@ import { StatRing } from "@/components/brand/stat-ring";
 import { cn } from "@/lib/utils";
 
 const STAGES = [
-  { key: "question", label: "Question", icon: MessageCircleQuestion },
+  { key: "question", label: "Question", short: "Brief", icon: MessageCircleQuestion },
   { key: "design", label: "Design", icon: Layers },
-  { key: "fieldwork", label: "Fieldwork", icon: MonitorSmartphone },
+  { key: "fieldwork", label: "Fieldwork", short: "Field", icon: MonitorSmartphone },
   { key: "insight", label: "Insight", icon: Lightbulb },
 ] as const;
 
@@ -69,13 +69,21 @@ export function InsightEngine() {
                 aria-controls="insight-engine-panel"
                 onClick={() => setIndex(i)}
                 className={cn(
-                  "group flex flex-col gap-2 rounded-xl px-2 pt-2.5 pb-2 text-left transition-colors",
+                  "group flex min-w-0 flex-col gap-2 rounded-xl px-1.5 pt-2.5 pb-2 text-left transition-colors sm:px-2",
                   active ? "bg-white/[0.07]" : "hover:bg-white/[0.04]",
                 )}
               >
-                <span className={cn("flex items-center gap-1.5 text-xs font-semibold", active ? "text-white" : "text-white/55")}>
+                <span
+                  className={cn(
+                    "flex flex-col items-start gap-1 text-[0.6875rem] font-semibold sm:flex-row sm:items-center sm:gap-1.5 sm:text-xs",
+                    active ? "text-white" : "text-white/55",
+                  )}
+                >
                   <Icon className="size-3.5 shrink-0" strokeWidth={2} aria-hidden="true" />
-                  <span className="truncate">{stage.label}</span>
+                  <span className="max-w-full truncate">
+                    <span className="sm:hidden">{"short" in stage ? stage.short : stage.label}</span>
+                    <span className="hidden sm:inline">{stage.label}</span>
+                  </span>
                 </span>
                 <span className="block h-0.5 overflow-hidden rounded-full bg-white/10">
                   <motion.span

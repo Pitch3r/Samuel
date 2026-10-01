@@ -147,6 +147,12 @@
   summary::-webkit-details-marker {
     display: none;
   }
+
+  /* Grid children may shrink below their content's natural width, so long words, forms and tables
+     wrap or scroll inside their column instead of pushing the page sideways on narrow phones. */
+  .grid > * {
+    min-width: 0;
+  }
 }
 
 @layer components {
@@ -271,12 +277,12 @@
   .prose-prime ul > li::before {
     content: "";
     position: absolute;
-    left: 0.15em;
+    left: 0.3em;
     top: 0.72em;
-    width: 0.5em;
-    height: 0.5em;
+    width: 0.4em;
+    height: 0.4em;
     border-radius: 999px;
-    border: 2px solid var(--color-blue);
+    background: var(--color-blue);
   }
 
   .prose-prime ol {

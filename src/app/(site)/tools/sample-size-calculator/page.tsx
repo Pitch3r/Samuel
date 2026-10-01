@@ -122,23 +122,23 @@ export default async function SampleSizePage({ searchParams }: Props) {
             </div>
 
             <div className="space-y-6">
-              <Reveal className="overflow-hidden rounded-card border border-mist bg-white">
+              <Reveal className="overflow-x-auto rounded-card border border-mist bg-white">
                 <table className="w-full text-left text-sm">
-                  <caption className="border-b border-mist px-6 py-4 text-left font-display text-base font-bold text-navy">
+                  <caption className="border-b border-mist px-4 py-4 text-left font-display sm:px-6 text-base font-bold text-navy">
                     Common sample sizes, large population
                   </caption>
                   <thead className="bg-cloud text-xs text-slate">
                     <tr>
-                      <th scope="col" className="px-6 py-3 font-semibold">
+                      <th scope="col" className="py-3 pr-2 pl-4 font-semibold sm:px-6">
                         Margin of error
                       </th>
-                      <th scope="col" className="px-4 py-3 text-right font-semibold">
+                      <th scope="col" className="px-2 py-3 text-right font-semibold sm:px-4">
                         90%
                       </th>
-                      <th scope="col" className="px-4 py-3 text-right font-semibold">
+                      <th scope="col" className="px-2 py-3 text-right font-semibold sm:px-4">
                         95%
                       </th>
-                      <th scope="col" className="px-6 py-3 text-right font-semibold">
+                      <th scope="col" className="py-3 pr-4 pl-2 text-right font-semibold sm:px-6">
                         99%
                       </th>
                     </tr>
@@ -146,17 +146,17 @@ export default async function SampleSizePage({ searchParams }: Props) {
                   <tbody>
                     {reference.map((row) => (
                       <tr key={row.margin} className="border-t border-mist">
-                        <th scope="row" className="px-6 py-3 font-semibold text-navy">
+                        <th scope="row" className="py-3 pr-2 pl-4 font-semibold whitespace-nowrap text-navy sm:px-6">
                           ±{row.margin} points
                         </th>
-                        <td className="px-4 py-3 text-right tabular-nums">{row.c90.toLocaleString("en-GB")}</td>
-                        <td className="px-4 py-3 text-right font-semibold text-navy tabular-nums">{row.c95.toLocaleString("en-GB")}</td>
-                        <td className="px-6 py-3 text-right tabular-nums">{row.c99.toLocaleString("en-GB")}</td>
+                        <td className="px-2 py-3 text-right tabular-nums sm:px-4">{row.c90.toLocaleString("en-GB")}</td>
+                        <td className="px-2 py-3 text-right font-semibold text-navy tabular-nums sm:px-4">{row.c95.toLocaleString("en-GB")}</td>
+                        <td className="py-3 pr-4 pl-2 text-right tabular-nums sm:px-6">{row.c99.toLocaleString("en-GB")}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-                <p className="border-t border-mist px-6 py-3 text-xs text-slate">Expected proportion 50%, simple random sample.</p>
+                <p className="border-t border-mist px-4 py-3 text-xs text-slate sm:px-6">Expected proportion 50%, simple random sample.</p>
               </Reveal>
               <Reveal>
                 <dl className="divide-y divide-mist rounded-card border border-mist bg-white">

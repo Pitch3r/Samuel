@@ -127,7 +127,7 @@ npm run build        # production build
 npm run test:e2e     # end-to-end tests in a real browser (builds and starts the app)
 ```
 
-The end-to-end suite covers every page, the forms and wizard, the calculator, the admin sign-in and workflow, and checks that no rendered page contains an em or en dash. It uses Playwright: run `npx playwright install chromium` once, or set `PW_CHROMIUM_PATH` to an existing Chromium binary.
+The end-to-end suite covers every page, the forms and wizard, the calculator, the admin sign-in and workflow, and checks that no rendered page contains an em or en dash. Pages are checked on desktop, on a standard phone and on a 320px small phone, where nothing may scroll sideways. It uses Playwright: run `npx playwright install chromium` once, or set `PW_CHROMIUM_PATH` to an existing Chromium binary.
 
 ## Before launch
 

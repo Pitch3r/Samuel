@@ -105,8 +105,8 @@ export function ArticleCard({ article, className }: { article: ArticleSummary; c
         <h3 className="mt-3 font-display text-xl leading-snug font-bold text-navy transition-colors group-hover:text-blue">
           {article.title}
         </h3>
-        <p className="mt-3 line-clamp-3 flex-1 text-[0.95rem] leading-relaxed text-slate">{article.excerpt}</p>
-        <span className="mt-5 inline-flex items-center gap-1.5 font-display text-sm font-semibold text-blue">
+        <p className="mt-3 line-clamp-3 text-[0.95rem] leading-relaxed text-slate">{article.excerpt}</p>
+        <span className="mt-auto inline-flex items-center gap-1.5 pt-5 font-display text-sm font-semibold text-blue">
           Read article
           <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
         </span>

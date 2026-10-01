@@ -1,6 +1,18 @@
 import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { extendTailwindMerge } from "tailwind-merge";
 import { site } from "@/config/site";
+
+// Teach tailwind-merge the brand's custom tokens so, for example, "text-h1 text-white"
+// keeps both the size and the colour instead of treating them as a conflict.
+const twMerge = extendTailwindMerge({
+  extend: {
+    theme: {
+      text: ["display", "h1", "h2", "h3", "lead"],
+      shadow: ["card", "lift", "glow"],
+      radius: ["card", "panel"],
+    },
+  },
+});
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

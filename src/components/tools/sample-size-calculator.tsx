@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { motion } from "motion/react";
-import { Check, Copy, Info, RotateCcw } from "lucide-react";
+import { Check, ChevronDown, Copy, Info, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import { BarChart } from "@/components/charts/bar-chart";
 import { cn } from "@/lib/utils";
@@ -163,15 +163,15 @@ export function SampleSizeCalculator({ initial = {} }: { initial?: CalculatorIni
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
       <div className="rounded-[1.75rem] border border-mist bg-white p-6 shadow-card sm:p-8">
         <div role="tablist" aria-label="Calculator mode" className="grid grid-cols-2 gap-1 rounded-full bg-cloud p-1 ring-1 ring-mist">
           {(
             [
-              ["size", "Sample size needed"],
-              ["margin", "Margin of error"],
+              ["size", "Sample size needed", "Sample size"],
+              ["margin", "Margin of error", "Margin of error"],
             ] as const
-          ).map(([key, label]) => (
+          ).map(([key, label, short]) => (
             <button
               key={key}
               type="button"
@@ -179,14 +179,15 @@ export function SampleSizeCalculator({ initial = {} }: { initial?: CalculatorIni
               aria-selected={mode === key}
               onClick={() => setMode(key)}
               className={cn(
-                "relative rounded-full px-4 py-2.5 font-display text-sm font-semibold transition-colors",
+                "relative rounded-full px-3 py-2.5 font-display text-sm font-semibold transition-colors sm:px-4",
                 mode === key ? "text-white" : "text-slate hover:text-navy",
               )}
             >
               {mode === key && (
                 <motion.span layoutId="calc-mode" className="absolute inset-0 rounded-full bg-navy" transition={{ duration: 0.35 }} />
               )}
-              <span className="relative">{label}</span>
+              <span className="relative hidden sm:inline">{label}</span>
+              <span className="relative sm:hidden">{short}</span>
             </button>
           ))}
         </div>
@@ -247,7 +248,7 @@ export function SampleSizeCalculator({ initial = {} }: { initial?: CalculatorIni
             <input
               id="population"
               inputMode="numeric"
-              placeholder="Leave blank for a large or unknown population"
+              placeholder="Leave blank if unknown"
               value={population}
               onChange={(event) => setPopulation(event.target.value.replace(/[^\d]/g, ""))}
               aria-invalid={!validPopulation || undefined}
@@ -259,9 +260,12 @@ export function SampleSizeCalculator({ initial = {} }: { initial?: CalculatorIni
           </div>
 
           <details className="group rounded-2xl border border-mist bg-cloud/60 p-5 open:bg-white">
-            <summary className="flex cursor-pointer list-none items-center justify-between font-display text-sm font-semibold text-navy">
-              Advanced settings
-              <span className="text-xs font-normal text-slate group-open:hidden">Proportion, design effect, response rate</span>
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 [&::-webkit-details-marker]:hidden">
+              <span>
+                <span className="block font-display text-sm font-semibold text-navy">Advanced settings</span>
+                <span className="mt-0.5 block text-xs text-slate">Expected proportion, design effect and response rate</span>
+              </span>
+              <ChevronDown className="size-4 shrink-0 text-slate transition-transform duration-300 group-open:rotate-180" aria-hidden="true" />
             </summary>
             <div className="mt-6 space-y-7">
               <NumberField

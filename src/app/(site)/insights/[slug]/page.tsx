@@ -83,9 +83,10 @@ export default async function ArticlePage({ params }: Props) {
 
       <header className="on-dark relative isolate overflow-hidden bg-navy pt-36 pb-16 text-white sm:pt-40 sm:pb-20">
         <div aria-hidden="true" className="bg-grid-dark mask-fade-b absolute inset-0 -z-10 opacity-60" />
-        <PrimeArc tone="dark" segmentStart={200} segmentSweep={46} className="-top-[22rem] -right-[20rem] -z-10 size-[46rem]" />
+        <PrimeArc tone="dark" segmentSweep={0} className="-top-[22rem] -right-[20rem] -z-10 size-[46rem] xl:hidden" />
+        <PrimeArc tone="dark" segmentStart={200} segmentSweep={46} className="-top-[22rem] -right-[20rem] -z-10 hidden size-[46rem] xl:block" />
         <Container size="narrow">
-          <Link href="/insights" className="inline-flex items-center gap-2 text-sm font-semibold text-white/70 transition-colors hover:text-white">
+          <Link href="/insights" className="flex w-fit items-center gap-2 text-sm font-semibold text-white/70 transition-colors hover:text-white">
             <ArrowLeft className="size-4" aria-hidden="true" />
             All insights
           </Link>

@@ -24,6 +24,7 @@ export function PrimeArc({
   className?: string;
   /** Degrees clockwise from 12 o'clock. */
   segmentStart?: number;
+  /** Set to 0 to show the faint ring alone, where a segment would sit under content. */
   segmentSweep?: number;
   /** Ring thickness in viewBox units (radius is 100). */
   thickness?: number;
@@ -53,6 +54,7 @@ export function PrimeArc({
       >
         {hairline && <circle cx="100" cy="100" r="99.4" fill="none" stroke={line} strokeWidth="0.35" />}
         <circle cx="100" cy="100" r={r} fill="none" stroke={ring} strokeWidth={thickness} />
+        {segmentSweep > 0 && (
         <motion.path
           d={arcPath(100, 100, r, segmentStart, segmentStart + segmentSweep)}
           fill="none"
@@ -63,6 +65,7 @@ export function PrimeArc({
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
         />
+        )}
       </motion.svg>
     </div>
   );

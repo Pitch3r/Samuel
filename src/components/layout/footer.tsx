@@ -24,7 +24,7 @@ export function Footer() {
         className="pointer-events-none absolute -right-48 -bottom-72 -z-10 size-[42rem] rounded-full border-[3.5rem] border-white/[0.035]"
       />
       <div className="mx-auto max-w-[78rem] px-5 sm:px-8">
-        <div className="grid gap-10 border-b border-white/10 py-14 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-16">
+        <div className="grid grid-cols-1 gap-10 border-b border-white/10 py-14 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-16">
           <div>
             <p className="eyebrow">{site.newsletterName}</p>
             <p className="mt-4 max-w-xl font-display text-2xl leading-snug font-bold text-white sm:text-[1.75rem]">

@@ -64,7 +64,7 @@ export function BarChart({
   useEffect(() => {
     const element = wrapRef.current;
     if (!element) return;
-    const observer = new ResizeObserver(([entry]) => setWidth(Math.max(280, entry.contentRect.width)));
+    const observer = new ResizeObserver(([entry]) => setWidth(Math.max(160, entry.contentRect.width)));
     observer.observe(element);
     return () => observer.disconnect();
   }, []);
@@ -79,11 +79,15 @@ export function BarChart({
   const barW = Math.min(24, Math.max(4, band - 6));
   const scaleY = (value: number) => plotH - (value / max) * plotH;
   const activeDatum = active !== null ? data[active] : null;
+  // Thin the axis labels when bars get narrow, counting from the highlighted bar so its label always shows.
+  const labelWidth = Math.max(...data.map((d) => d.label.length), 1) * 6.2 + 10;
+  const labelStep = Math.max(xLabelEvery, Math.ceil(labelWidth / Math.max(band, 1)));
+  const labelAnchor = Math.max(0, data.findIndex((d) => d.highlight));
 
   return (
     <figure className={cn("w-full", className)}>
-      <div ref={wrapRef} className="relative w-full" style={{ height }}>
-        <svg width={width} height={height} role="img" aria-labelledby={`${id}-title`} className="block overflow-visible">
+      <div ref={wrapRef} className="relative w-full min-w-0" style={{ height }}>
+        <svg width={width} height={height} role="img" aria-labelledby={`${id}-title`} className="absolute inset-x-0 top-0 block overflow-visible">
           <title id={`${id}-title`}>{ariaLabel}</title>
           <g transform={`translate(${margin.left},${margin.top})`}>
             {ticks.map((tick) => (
@@ -123,7 +127,7 @@ export function BarChart({
                       {formatValue(datum.value)}
                     </text>
                   )}
-                  {i % xLabelEvery === 0 && (
+                  {(i - labelAnchor) % labelStep === 0 && (
                     <text x={x + barW / 2} y={plotH + 20} textAnchor="middle" fontSize={11} fill={SLATE}>
                       {datum.label}
                     </text>

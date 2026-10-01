@@ -2,9 +2,11 @@
 
 import { useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowDown, Check, Clock, Signal } from "lucide-react";
+import { ArrowDown, Check, Clock, PencilRuler, Signal } from "lucide-react";
+import { PrimeArc } from "@/components/brand/prime-arc";
 import { TrainingForm, type TrainingFormHandle } from "@/components/forms/training-form";
 import { courseCategories, courses } from "@/content/training";
+import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +15,9 @@ export function TrainingCatalogue() {
   const formRef = useRef<TrainingFormHandle>(null);
   const formSection = useRef<HTMLDivElement>(null);
   const filtered = useMemo(() => (category === "All" ? courses : courses.filter((course) => course.category === category)), [category]);
+  // The tailored programme card fills whatever is left of the last row, so the grid never ends on a lone card.
+  const fillMd = filtered.length % 2 === 0 ? "md:col-span-2" : "md:col-span-1";
+  const fillXl = ["xl:col-span-3", "xl:col-span-2", "xl:col-span-1"][filtered.length % 3];
 
   function enquire(slug: string) {
     formRef.current?.selectCourse(slug);
@@ -88,6 +93,28 @@ export function TrainingCatalogue() {
               </motion.li>
             );
           })}
+          <motion.li
+            key="tailored"
+            layout
+            transition={{ duration: 0.3 }}
+            className={cn("on-dark relative isolate flex flex-col justify-between gap-8 overflow-hidden rounded-card bg-navy p-7 text-white sm:p-9", fillMd, fillXl)}
+          >
+            <div aria-hidden="true" className="bg-grid-dark absolute inset-0 -z-10 opacity-50" />
+            <PrimeArc tone="dark" segmentSweep={0} className="-right-40 -bottom-48 -z-10 size-[26rem]" />
+            <div className="max-w-xl">
+              <span className="grid size-12 place-items-center rounded-2xl bg-white/10 text-white">
+                <PencilRuler className="size-[1.35rem]" strokeWidth={1.75} aria-hidden="true" />
+              </span>
+              <h3 className="mt-6 font-display text-xl leading-snug font-bold">Need a programme built for your team?</h3>
+              <p className="mt-2.5 text-[0.95rem] leading-relaxed text-white/75">
+                We combine and adapt any of these courses around your sector, your own datasets and your timetable, from a half-day
+                refresher to a full mentoring scheme.
+              </p>
+            </div>
+            <Button type="button" variant="gold" arrow onClick={() => enquire("custom")} className="self-start">
+              Design a tailored programme
+            </Button>
+          </motion.li>
         </AnimatePresence>
       </motion.ul>
 
