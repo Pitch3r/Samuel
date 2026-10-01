@@ -1,0 +1,389 @@
+@import "tailwindcss";
+
+/*
+ * Primeresearch design tokens.
+ * Palette and type come from the brand kit (02_Colours, 03_Typography).
+ * Navy leads, Blue and Slate support, Gold is a single accent per layout,
+ * and Teal appears only in charts and data.
+ */
+@theme {
+  --color-*: initial;
+
+  --color-navy: #0b2447;
+  --color-navy-deep: #071a35;
+  --color-navy-soft: #13325e;
+  --color-blue: #2b67c5;
+  --color-blue-dark: #2257ab;
+  --color-blue-tint: #eaf1fb;
+  --color-gold: #e4ac3f;
+  --color-gold-dark: #cf9628;
+  --color-gold-tint: #fcf4e3;
+  --color-teal: #1b9a8f;
+  --color-teal-dark: #127067;
+  --color-teal-tint: #e6f5f3;
+  --color-charcoal: #1f2933;
+  --color-slate: #5b6b7f;
+  --color-mist: #e3e8ef;
+  --color-cloud: #f6f8fb;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-danger: #b42318;
+  --color-danger-tint: #fdecea;
+
+  --font-sans: var(--font-inter), "Inter", Calibri, Arial, sans-serif;
+  --font-display: var(--font-jakarta), "Plus Jakarta Sans", Arial, sans-serif;
+
+  --text-display: clamp(2.6rem, 1.4rem + 4.6vw, 5.1rem);
+  --text-display--line-height: 1.03;
+  --text-display--letter-spacing: -0.035em;
+  --text-h1: clamp(2.25rem, 1.45rem + 3vw, 3.9rem);
+  --text-h1--line-height: 1.06;
+  --text-h1--letter-spacing: -0.03em;
+  --text-h2: clamp(1.9rem, 1.35rem + 2vw, 3.05rem);
+  --text-h2--line-height: 1.1;
+  --text-h2--letter-spacing: -0.028em;
+  --text-h3: clamp(1.25rem, 1.1rem + 0.5vw, 1.55rem);
+  --text-h3--line-height: 1.25;
+  --text-h3--letter-spacing: -0.015em;
+  --text-lead: clamp(1.075rem, 1rem + 0.35vw, 1.3rem);
+  --text-lead--line-height: 1.6;
+
+  --radius-card: 1.125rem;
+  --radius-panel: 1.75rem;
+
+  --shadow-card: 0 1px 2px rgb(11 36 71 / 0.04), 0 10px 30px -14px rgb(11 36 71 / 0.16);
+  --shadow-lift: 0 2px 4px rgb(11 36 71 / 0.05), 0 26px 50px -22px rgb(11 36 71 / 0.32);
+  --shadow-glow: 0 0 0 1px rgb(255 255 255 / 0.08), 0 30px 60px -30px rgb(0 0 0 / 0.55);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-marquee: marquee 48s linear infinite;
+  --animate-spin-slow: spin 90s linear infinite;
+  --animate-pulse-dot: pulse-dot 2.2s ease-out infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes pulse-dot {
+    0% {
+      box-shadow: 0 0 0 0 rgb(228 172 63 / 0.55);
+    }
+    70% {
+      box-shadow: 0 0 0 12px rgb(228 172 63 / 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgb(228 172 63 / 0);
+    }
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: 6rem;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    background-color: var(--color-white);
+    color: var(--color-charcoal);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    color: var(--color-navy);
+    text-wrap: balance;
+  }
+
+  .on-dark :where(h1, h2, h3, h4) {
+    color: var(--color-white);
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background-color: var(--color-gold-tint);
+    color: var(--color-navy);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-blue);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .on-dark :focus-visible {
+    outline-color: var(--color-gold);
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    font: inherit;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+}
+
+@layer components {
+  /* Letter-spaced label in Plus Jakarta Sans Bold, per the brand type rules. */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-blue);
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 1.75rem;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--color-gold);
+  }
+
+  .on-dark .eyebrow {
+    color: var(--color-gold);
+  }
+
+  .eyebrow-plain::before {
+    display: none;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .bg-grid-dark {
+    background-image:
+      linear-gradient(rgb(255 255 255 / 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+
+  .bg-grid-light {
+    background-image:
+      linear-gradient(rgb(11 36 71 / 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(11 36 71 / 0.05) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+
+  .mask-fade-b {
+    mask-image: linear-gradient(to bottom, black 55%, transparent);
+  }
+
+  .mask-fade-x {
+    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  }
+
+  /* Long-form article typography. */
+  .prose-prime {
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: var(--color-charcoal);
+  }
+
+  .prose-prime > * + * {
+    margin-top: 1.25em;
+  }
+
+  .prose-prime h2 {
+    margin-top: 2.2em;
+    font-size: 1.65rem;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+
+  .prose-prime h3 {
+    margin-top: 1.8em;
+    font-size: 1.25rem;
+    line-height: 1.3;
+    font-weight: 700;
+  }
+
+  .prose-prime h2 + *,
+  .prose-prime h3 + * {
+    margin-top: 0.6em;
+  }
+
+  .prose-prime a {
+    color: var(--color-blue);
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  .prose-prime a:hover {
+    color: var(--color-navy);
+  }
+
+  .prose-prime strong {
+    color: var(--color-navy);
+    font-weight: 650;
+  }
+
+  .prose-prime ul,
+  .prose-prime ol {
+    padding-left: 1.4em;
+  }
+
+  .prose-prime ul {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .prose-prime ul > li {
+    position: relative;
+    padding-left: 1.6em;
+  }
+
+  .prose-prime ul > li::before {
+    content: "";
+    position: absolute;
+    left: 0.15em;
+    top: 0.72em;
+    width: 0.5em;
+    height: 0.5em;
+    border-radius: 999px;
+    border: 2px solid var(--color-blue);
+  }
+
+  .prose-prime ol {
+    list-style: decimal;
+  }
+
+  .prose-prime ol > li::marker {
+    color: var(--color-blue);
+    font-family: var(--font-display);
+    font-weight: 700;
+  }
+
+  .prose-prime li + li {
+    margin-top: 0.5em;
+  }
+
+  .prose-prime blockquote {
+    position: relative;
+    margin-block: 2em;
+    padding: 1.4em 1.6em 1.4em 1.8em;
+    border-radius: var(--radius-card);
+    background: var(--color-cloud);
+    color: var(--color-navy);
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.55;
+  }
+
+  .prose-prime blockquote::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 1.2em;
+    bottom: 1.2em;
+    width: 3px;
+    border-radius: 3px;
+    background: var(--color-gold);
+  }
+
+  .prose-prime blockquote p {
+    margin: 0;
+  }
+
+  .prose-prime table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .prose-prime .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--color-mist);
+    border-radius: var(--radius-card);
+  }
+
+  .prose-prime th {
+    background: var(--color-cloud);
+    color: var(--color-navy);
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-align: left;
+  }
+
+  .prose-prime th,
+  .prose-prime td {
+    padding: 0.75em 1em;
+    border-bottom: 1px solid var(--color-mist);
+    vertical-align: top;
+  }
+
+  .prose-prime tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .prose-prime hr {
+    border: 0;
+    border-top: 1px solid var(--color-mist);
+    margin-block: 2.5em;
+  }
+
+  .prose-prime code {
+    font-size: 0.9em;
+    background: var(--color-cloud);
+    border: 1px solid var(--color-mist);
+    border-radius: 6px;
+    padding: 0.1em 0.35em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+  }
+}
