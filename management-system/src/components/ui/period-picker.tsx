@@ -1,4 +1,5 @@
 import { FilterForm } from "@/components/ui/auto-submit";
+import { buttonClasses } from "@/components/ui/button";
 import { PERIOD_PRESETS, type PeriodPreset } from "@/lib/period";
 import type { Period } from "@/lib/metrics";
 
@@ -31,19 +32,25 @@ export function PeriodPicker({
         <>
           <label className="text-xs font-semibold text-slate">
             <span className="mb-1 block">From</span>
-            <input type="date" name="from" defaultValue={period.from} className="field-input h-10 w-40 py-0 text-sm" />
+            <input type="date" name="from" defaultValue={period.from} min="2000-01-01" className="field-input h-10 w-40 py-0 text-sm" />
           </label>
           <label className="text-xs font-semibold text-slate">
             <span className="mb-1 block">To</span>
-            <input type="date" name="to" defaultValue={period.to} className="field-input h-10 w-40 py-0 text-sm" />
+            <input type="date" name="to" defaultValue={period.to} min="2000-01-01" className="field-input h-10 w-40 py-0 text-sm" />
           </label>
         </>
       )}
-      <noscript>
-        <button type="submit" className="field-input h-10 w-auto">
+      {preset === "custom" ? (
+        <button type="submit" className={buttonClasses({ variant: "secondary", className: "h-10" })}>
           Apply
         </button>
-      </noscript>
+      ) : (
+        <noscript>
+          <button type="submit" className={buttonClasses({ variant: "secondary", className: "h-10" })}>
+            Apply
+          </button>
+        </noscript>
+      )}
     </FilterForm>
   );
 }

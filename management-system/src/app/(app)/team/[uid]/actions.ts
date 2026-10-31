@@ -7,6 +7,7 @@ import { requireAdmin } from "@/lib/auth/session";
 import { changeEmail, countAdmins, deleteAccount, requireUserRecord, setPassword, setUserStatus, updateProfile } from "@/lib/data/users";
 import { endAllSessionsFor } from "@/lib/data/sessions";
 import { unbindEmployee } from "@/lib/data/devices";
+import { notify } from "@/lib/data/notifications";
 import { logActivity } from "@/lib/data/activity";
 import { bucket } from "@/lib/firebase/admin";
 import { actionError } from "@/lib/actions";
@@ -204,7 +205,14 @@ export async function deleteAccountAction(_state: State, formData: FormData): Pr
     await endAllSessionsFor(uid, "account-deleted");
     // Free any office computer they were bound to, so it can be registered to someone else.
     await unbindEmployee(uid);
-    await deleteAccount(uid);
+    const { orphaned } = await deleteAccount(uid);
+    if (orphaned.length) {
+      await notify([viewer.uid], {
+        title: `${plural(orphaned.length, "assignment")} now ${orphaned.length === 1 ? "has" : "have"} nobody assigned`,
+        body: orphaned.map((item) => item.ref).join(", "),
+        href: `/assignments/${orphaned[0]!.id}`,
+      });
+    }
     await bucket()
       .deleteFiles({ prefix: `profiles/${uid}/` })
       .catch((error: unknown) => console.error("Could not delete profile photos", error));

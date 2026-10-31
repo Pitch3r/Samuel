@@ -38,7 +38,7 @@ export default async function TeamMemberPage(props: PageProps<"/team/[uid]">) {
   const viewer = await requireAdmin();
   const [{ uid }, params] = await Promise.all([props.params, props.searchParams]);
   const { user } = await loadMember(uid);
-  if (!user) notFound();
+  if (!user || user.deletedAt) notFound();
 
   const tab: Tab = TABS.find((item) => item === params.tab) ?? "overview";
   const base = `/team/${encodeURIComponent(user.uid)}`;

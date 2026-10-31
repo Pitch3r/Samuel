@@ -210,5 +210,6 @@ export async function deleteAssignmentAction(_state: State, formData: FormData):
   } catch (error) {
     return actionError(error);
   }
+  refresh();
   redirect("/assignments?deleted=1");
 }

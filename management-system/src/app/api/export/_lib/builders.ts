@@ -25,10 +25,13 @@ const nameOf = (names: Map<string, string>, uid: string) => names.get(uid) ?? "F
 
 /* ------------------------------------------------------------------ assignments (administrator) */
 
-async function assignmentsSheet(viewer: Viewer, period: Period): Promise<Sheet> {
+/** Options an export may take; `uid` narrows the administrator's export to one person. */
+export type SheetOptions = { uid?: string; allTime?: boolean };
+
+async function assignmentsSheet(viewer: Viewer, period: Period, options: SheetOptions = {}): Promise<Sheet> {
   const [assignments, names] = await Promise.all([listAllAssignments(viewer), userNameMap()]);
   const rows = assignments
-    .filter((assignment) => activeDuring(assignment, period))
+    .filter((assignment) => options.allTime || activeDuring(assignment, period))
     .sort((a, b) => a.ref.localeCompare(b.ref))
     .map((a) => ({
       ref: a.ref,
@@ -85,8 +88,8 @@ async function assignmentsSheet(viewer: Viewer, period: Period): Promise<Sheet> 
 
 /* ------------------------------------------------------------------ time logs (everyone; employees get their own) */
 
-async function timeSheet(viewer: Viewer, period: Period): Promise<Sheet> {
-  const [logs, names] = await Promise.all([listTimeLogs(viewer, period), userNameMap()]);
+async function timeSheet(viewer: Viewer, period: Period, options: SheetOptions = {}): Promise<Sheet> {
+  const [logs, names] = await Promise.all([listTimeLogs(viewer, { ...period, uid: options.uid }), userNameMap()]);
   const rows = logs
     .map((log) => ({
       date: log.date,
@@ -114,8 +117,8 @@ async function timeSheet(viewer: Viewer, period: Period): Promise<Sheet> {
 
 /* ------------------------------------------------------------------ work reports (everyone; employees get their own) */
 
-async function reportsSheet(viewer: Viewer, period: Period): Promise<Sheet> {
-  const [reports, assignments, names] = await Promise.all([listWorkReports(viewer), listAssignmentsFor(viewer), userNameMap()]);
+async function reportsSheet(viewer: Viewer, period: Period, options: SheetOptions = {}): Promise<Sheet> {
+  const [reports, assignments, names] = await Promise.all([listWorkReports(viewer, { uid: options.uid }), listAssignmentsFor(viewer), userNameMap()]);
   const refOf = new Map(assignments.map((assignment) => [assignment.id, assignment.ref]));
   const rows = reports
     // Reports whose period overlaps the export period.
@@ -164,10 +167,10 @@ async function reportsSheet(viewer: Viewer, period: Period): Promise<Sheet> {
 
 /* ------------------------------------------------------------------ attendance (everyone; employees get their own) */
 
-async function attendanceSheet(viewer: Viewer, period: Period): Promise<Sheet> {
+async function attendanceSheet(viewer: Viewer, period: Period, options: SheetOptions = {}): Promise<Sheet> {
   const [records, names] = await Promise.all([
     // The attendance reader is not viewer-scoped, so an employee's own uid is passed explicitly.
-    listAttendance(viewer, viewer.isAdmin ? period : { ...period, uid: viewer.uid }),
+    listAttendance(viewer, { ...period, uid: options.uid }),
     userNameMap(),
   ]);
   const rows = records
@@ -280,7 +283,7 @@ async function performanceSheet(viewer: Viewer, period: Period): Promise<Sheet> 
   };
 }
 
-export const SHEETS: Record<ExportType, (viewer: Viewer, period: Period) => Promise<Sheet>> = {
+export const SHEETS: Record<ExportType, (viewer: Viewer, period: Period, options?: SheetOptions) => Promise<Sheet>> = {
   assignments: assignmentsSheet,
   time: timeSheet,
   reports: reportsSheet,

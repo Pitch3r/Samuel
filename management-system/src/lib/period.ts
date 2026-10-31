@@ -13,7 +13,15 @@ export const PERIOD_PRESETS = [
 ] as const;
 export type PeriodPreset = (typeof PERIOD_PRESETS)[number]["id"];
 
-const valid = (value: unknown): value is string => typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value);
+/** A real calendar date from 2000 onwards; anything else falls back to the default period. */
+const valid = (value: unknown): value is string => {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value) || value < "2000-01-01") return false;
+  const date = new Date(`${value}T12:00:00Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+};
+
+/** Longest custom range, so one request cannot ask for decades of data. */
+export const MAX_PERIOD_DAYS = 3 * 366;
 
 /**
  * Reads ?period=this-month (or ?from=YYYY-MM-DD&to=YYYY-MM-DD) from a page's
@@ -48,7 +56,10 @@ export function resolvePeriod(params: Record<string, string | string[] | undefin
     case "custom": {
       const from = valid(params.from) ? params.from : startOfMonth(today);
       const to = valid(params.to) ? params.to : today;
-      period = from <= to ? { from, to } : { from: to, to: from };
+      const ordered = from <= to ? { from, to } : { from: to, to: from };
+      // Keep the end date and trim the start when the range is too long.
+      const earliest = addDays(ordered.to, -(MAX_PERIOD_DAYS - 1));
+      period = { from: ordered.from < earliest ? earliest : ordered.from, to: ordered.to };
       break;
     }
     default:

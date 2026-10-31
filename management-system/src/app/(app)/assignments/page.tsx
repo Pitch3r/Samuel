@@ -131,7 +131,7 @@ export default async function AssignmentsPage(props: PageProps<"/assignments">) 
           viewer.isAdmin ? (
             <>
               {/* A plain download link: the CSV comes from a route handler, not a page. */}
-              <a href="/api/export/assignments" download className={buttonClasses({ variant: "secondary" })}>
+              <a href="/api/export/assignments?period=all" download className={buttonClasses({ variant: "secondary" })}>
                 <Download aria-hidden="true" />
                 Export CSV
               </a>

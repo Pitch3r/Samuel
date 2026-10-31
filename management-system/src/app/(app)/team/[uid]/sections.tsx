@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ArrowRight, Ban, Camera, ClipboardList, FileText, History, KeyRound, LogOut, Mail, Monitor, ShieldCheck, Trash2, UserCheck, UserRound } from "lucide-react";
-import { approvedDevicesFor } from "@/lib/data/devices";
+import { approvedDevicesFor, devicesFor } from "@/lib/data/devices";
 import { listSessionsForUser } from "@/lib/data/sessions";
 import { listActivityByActor, listActivityForEntity } from "@/lib/data/activity";
 import { getAccessSettings } from "@/lib/data/settings";
@@ -193,7 +193,9 @@ export async function SecurityTab({ viewer, user }: { viewer: Viewer; user: User
   const isEmployee = user.role === "employee";
   const [sessions, devices, settings] = await Promise.all([
     listSessionsForUser(user.uid, 15),
-    isEmployee ? approvedDevicesFor(user.uid) : Promise.resolve([]),
+    // Blocked computers are listed too, so an employee whose only computer was
+    // blocked can still be unlocked.
+    isEmployee ? devicesFor(user.uid) : Promise.resolve([]),
     getAccessSettings(),
   ]);
   const deviceLabels = await deviceLabelsFor(sessions);

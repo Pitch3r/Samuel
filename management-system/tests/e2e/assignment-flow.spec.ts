@@ -35,13 +35,13 @@ test("an assignment goes from brief to approved work", async ({ browser }) => {
   const officePc = await computer(browser);
   const staff = await signIn(officePc, CHANDA);
   await staff.goto("/notifications");
-  await expect(staff.getByText(`New assignment: ${title}`)).toBeVisible();
+  await expect(staff.getByText(`New assignment: ${title}`).first()).toBeVisible();
   await staff.goto(url);
   await staff.getByRole("button", { name: "Start work" }).click();
   await expect(staff.getByRole("button", { name: "Submit for review" })).toBeVisible();
 
   const progress = formWith(staff, "Save progress");
-  await progress.locator("input[name=progress][type=number]").fill("60");
+  await progress.getByLabel("Percent").fill("60");
   await progress.locator("textarea[name=note]").fill("Questionnaire drafted and piloted.");
   await progress.getByRole("button", { name: "Save progress" }).click();
   await expect(staff.getByText("Questionnaire drafted and piloted.").first()).toBeVisible();

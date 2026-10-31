@@ -29,7 +29,8 @@ const REASON_LABELS: Partial<Record<AccessDenial, string>> = {
 };
 
 function reasonLabel(reason: string) {
-  return REASON_LABELS[reason as AccessDenial] ?? ACCESS_DENIALS[reason as AccessDenial] ?? reason;
+  if (Object.hasOwn(REASON_LABELS, reason)) return REASON_LABELS[reason as AccessDenial];
+  return Object.hasOwn(ACCESS_DENIALS, reason) ? ACCESS_DENIALS[reason as AccessDenial] : reason;
 }
 
 /** Office access at a glance: whether restrictions are on, computers waiting, and refused sign-ins today. */

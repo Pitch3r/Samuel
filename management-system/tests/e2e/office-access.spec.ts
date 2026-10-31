@@ -112,14 +112,16 @@ test("office hours rule", async ({ browser }) => {
   await pc.close();
 });
 
-test("suspended accounts cannot sign in", async ({ browser }) => {
+test("suspended accounts cannot sign in, and say nothing about the account", async ({ browser }) => {
   await setAccess({ enforce: false });
   const { auth, db } = admin();
   const uid = await uidOf(MUTALE);
   await auth.updateUser(uid, { disabled: true });
   await db.collection("users").doc(uid).update({ status: "suspended" });
   const pc = await computer(browser);
-  await expectRefused(await signIn(pc, MUTALE), /suspended/i);
+  // A disabled login answers like a wrong password, so outsiders cannot tell
+  // which email addresses belong to suspended staff.
+  await expectRefused(await signIn(pc, MUTALE), /email address or password is not correct/i);
   await auth.updateUser(uid, { disabled: false });
   await db.collection("users").doc(uid).update({ status: "active" });
   await pc.close();

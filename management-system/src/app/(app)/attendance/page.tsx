@@ -55,9 +55,12 @@ function HowItWorks({ isAdmin }: { isAdmin: boolean }) {
 }
 
 /** Heatmap window: the period, widened to at least twelve weeks so the calendar reads well. */
+/** At least the last 12 weeks, and at most a year, ending with the period. */
 function heatWindow(from: string, to: string) {
   const twelveWeeksBack = addDays(startOfWeek(to), -77);
-  return { from: from < twelveWeeksBack ? from : twelveWeeksBack, to };
+  const yearBack = addDays(startOfWeek(to), -364);
+  const start = from < twelveWeeksBack ? from : twelveWeeksBack;
+  return { from: start < yearBack ? yearBack : start, to };
 }
 
 export default async function AttendancePage(props: PageProps<"/attendance">) {

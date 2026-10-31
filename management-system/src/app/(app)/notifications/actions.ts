@@ -34,7 +34,11 @@ export async function openNotificationAction(_prev: ActionResult | null, formDat
     return actionError(error);
   }
 
-  if (parsed.data.intent === "open" && href) redirect(safeNextPath(href, "/notifications"));
+  if (parsed.data.intent === "open" && href) {
+    // Refresh first so the unread badge in the navigation updates on arrival.
+    refresh();
+    redirect(safeNextPath(href, "/notifications"));
+  }
   refresh();
   return { ok: true };
 }

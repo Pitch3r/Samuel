@@ -106,3 +106,42 @@ describe("helpers", () => {
     expect(describeDue("2026-10-31", "2026-10-31").label).toBe("Due today");
   });
 });
+
+describe("hardening", () => {
+  it("refuses impossible calendar dates", async () => {
+    const { isRealDate } = await import("@/lib/validation");
+    expect(isRealDate("2026-02-28")).toBe(true);
+    expect(isRealDate("2028-02-29")).toBe(true);
+    expect(isRealDate("2026-02-30")).toBe(false);
+    expect(isRealDate("2025-01-32")).toBe(false);
+    expect(timeLogSchema.safeParse({ date: "2026-13-01", hours: "2" }).success).toBe(false);
+  });
+
+  it("closes redirect tricks that browsers would follow off-site", () => {
+    expect(safeNextPath("/\t/evil.example")).toBe("/dashboard");
+    expect(safeNextPath("/\n/evil.example")).toBe("/dashboard");
+    expect(safeNextPath("/%2F%2Fevil.example")).toBe("/%2F%2Fevil.example");
+    expect(safeNextPath("/assignments?view=board#top")).toBe("/assignments?view=board#top");
+  });
+
+  it("falls back to the default period for invalid or ancient dates and caps long ranges", async () => {
+    const { resolvePeriod, MAX_PERIOD_DAYS } = await import("@/lib/period");
+    expect(resolvePeriod({ from: "2026-13-45", to: "2026-10-10" }).preset).toBe("this-month");
+    expect(resolvePeriod({ from: "0001-01-01", to: "2026-10-10" }).preset).toBe("this-month");
+    const long = resolvePeriod({ period: "custom", from: "2000-01-01", to: "2026-10-10" }).period;
+    expect(long.to).toBe("2026-10-10");
+    const days = (Date.parse(`${long.to}T12:00:00Z`) - Date.parse(`${long.from}T12:00:00Z`)) / 86_400_000 + 1;
+    expect(days).toBe(MAX_PERIOD_DAYS);
+  });
+});
+
+describe("payments", () => {
+  it("keeps fee, amount paid and status consistent", async () => {
+    const { normalisePayment } = await import("@/lib/data/assignments");
+    expect(normalisePayment({ fee: 1000, paymentStatus: "paid", amountPaid: 0 })).toEqual({ fee: 1000, paymentStatus: "paid", amountPaid: 1000 });
+    expect(normalisePayment({ fee: 1000, paymentStatus: "invoiced", amountPaid: 1000 }).paymentStatus).toBe("paid");
+    expect(normalisePayment({ fee: 1000, paymentStatus: "invoiced", amountPaid: 400 }).paymentStatus).toBe("part_paid");
+    expect(normalisePayment({ fee: 1000, paymentStatus: "waived", amountPaid: 0 }).paymentStatus).toBe("waived");
+    expect(() => normalisePayment({ fee: 1000, paymentStatus: "part_paid", amountPaid: 1500 })).toThrow(/more than the fee/);
+  });
+});

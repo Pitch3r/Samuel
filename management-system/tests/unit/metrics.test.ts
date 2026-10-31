@@ -194,3 +194,20 @@ describe("employee metrics", () => {
     expect(metrics.score).not.toBeNull();
   });
 });
+
+describe("delivery date", () => {
+  it("counts the employee's last submission, not the approval date", () => {
+    expect(
+      wasOnTime(assignment({ status: "completed", dueDate: "2026-10-20", submittedAt: "2026-10-19T10:00:00.000Z", completedAt: "2026-10-23T10:00:00.000Z" })),
+    ).toBe(true);
+    expect(
+      wasOnTime(assignment({ status: "completed", dueDate: "2026-10-20", submittedAt: "2026-10-22T10:00:00.000Z", completedAt: "2026-10-23T10:00:00.000Z" })),
+    ).toBe(false);
+  });
+
+  it("does not expect a report for the current week before Friday", () => {
+    const metrics = employeeMetrics(user, { assignments: [], timeLogs: [], reports: [], attendance: [] }, { from: "2026-10-26", to: "2026-10-28" }, "2026-10-28");
+    expect(metrics.reportWeeksExpected).toBe(0);
+    expect(metrics.parts.reporting).toBeNull();
+  });
+});

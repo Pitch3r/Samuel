@@ -47,6 +47,8 @@ export interface UserProfile {
   updatedAt: ISODateTime;
   lastLoginAt: ISODateTime | null;
   lastSeenAt: ISODateTime | null;
+  /** Set when the account was deleted. The profile is kept so names on past work still resolve. */
+  deletedAt: ISODateTime | null;
 }
 
 export interface Category {

@@ -42,7 +42,10 @@ export async function verifyPassword(email: string, password: string): Promise<P
   if (response.ok && body.localId) return { ok: true, uid: body.localId, email: body.email ?? email };
 
   const code = body.error?.message ?? "";
-  if (code.startsWith("USER_DISABLED")) return { ok: false, reason: "suspended" };
+  // A disabled login answers like a wrong password, so it does not reveal which
+  // emails belong to suspended staff. The right password still reaches the
+  // profile check, which explains the suspension.
+  if (code.startsWith("USER_DISABLED")) return { ok: false, reason: "bad-credentials" };
   if (code.startsWith("TOO_MANY_ATTEMPTS")) return { ok: false, reason: "rate-limited" };
   if (
     code.startsWith("INVALID_LOGIN_CREDENTIALS") ||

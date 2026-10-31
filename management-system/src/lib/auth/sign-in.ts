@@ -146,9 +146,15 @@ export async function signIn(input: SignInInput): Promise<SignInResult> {
   const details = deviceDetails(ua, input.client);
   const event = { email, ip, deviceId, userAgent: ua };
 
-  const ipOk = await consumeRateLimit(`login:ip:${ip}`, { limit: 30, windowMs: 15 * 60_000 });
-  const emailOk = await consumeRateLimit(`login:email:${email}`, { limit: 8, windowMs: 15 * 60_000 });
-  if (!ipOk || !emailOk) {
+  // Strict limit per email and address, so nobody elsewhere can lock an account
+  // out; a looser per-email ceiling against guessing from many addresses; and a
+  // per-address limit, skipped when the address is unknown so one shared bucket
+  // cannot lock everyone out.
+  const window = { windowMs: 15 * 60_000 };
+  const ipOk = ip === "unknown" || (await consumeRateLimit(`login:ip:${ip}`, { limit: 30, ...window }));
+  const pairOk = await consumeRateLimit(`login:pair:${email}:${ip}`, { limit: 8, ...window });
+  const emailOk = await consumeRateLimit(`login:email:${email}`, { limit: 50, ...window });
+  if (!ipOk || !pairOk || !emailOk) {
     await recordLoginEvent({ ...event, uid: null, name: "", success: false, reason: "rate-limited" });
     return { ok: false, reason: "rate-limited" };
   }
@@ -181,7 +187,7 @@ export async function signIn(input: SignInInput): Promise<SignInResult> {
     await recordDeviceSeen(deviceId, { ip, uid: user.uid, userName: user.displayName, details });
   }
 
-  await clearRateLimit(`login:email:${email}`);
+  await clearRateLimit(`login:pair:${email}:${ip}`);
 
   const hours = user.role === "admin" ? ADMIN_SESSION_HOURS : Math.min(Math.max(settings.sessionHours, 1), 24);
   const expiresAt = new Date(Date.now() + hours * 3_600_000);

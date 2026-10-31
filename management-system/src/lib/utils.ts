@@ -69,10 +69,20 @@ export function plural(count: number, one: string, many = `${one}s`) {
   return `${count.toLocaleString("en-GB")} ${count === 1 ? one : many}`;
 }
 
-/** Safe redirect target: only same-site paths. */
+/**
+ * Safe redirect target: only a path on this site. The value is resolved the
+ * way a browser would (which strips tabs and newlines), and anything that
+ * lands on another origin is refused.
+ */
 export function safeNextPath(value: unknown, fallback = "/dashboard") {
-  if (typeof value !== "string") return fallback;
-  if (!value.startsWith("/") || value.startsWith("//") || value.startsWith("/\\")) return fallback;
-  if (value.startsWith("/login") || value.startsWith("/api/")) return fallback;
-  return value;
+  if (typeof value !== "string" || !value.startsWith("/") || /[\u0000-\u001f\u007f\\]/.test(value)) return fallback;
+  let url: URL;
+  try {
+    url = new URL(value, "http://prms.invalid");
+  } catch {
+    return fallback;
+  }
+  if (url.origin !== "http://prms.invalid") return fallback;
+  if (url.pathname.startsWith("/login") || url.pathname.startsWith("/api/")) return fallback;
+  return `${url.pathname}${url.search}${url.hash}`;
 }

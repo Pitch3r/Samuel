@@ -178,7 +178,7 @@ export function SignedInPeople({
 
 /** The sentence the person was shown, or a fallback for codes from older versions. */
 export function denialText(reason: string) {
-  return reason in ACCESS_DENIALS ? ACCESS_DENIALS[reason as AccessDenial] : reason || "Refused.";
+  return Object.hasOwn(ACCESS_DENIALS, reason) ? ACCESS_DENIALS[reason as AccessDenial] : reason || "Refused.";
 }
 
 export function SignInsTable({

@@ -17,7 +17,7 @@ export const metadata: Metadata = { title: "Sign in" };
 
 export default async function LoginPage({ searchParams }: PageProps<"/login">) {
   const params = await searchParams;
-  const reason = typeof params.reason === "string" && params.reason in ACCESS_DENIALS ? (params.reason as AccessDenial) : null;
+  const reason = typeof params.reason === "string" && Object.hasOwn(ACCESS_DENIALS, params.reason) ? (params.reason as AccessDenial) : null;
   const next = typeof params.next === "string" ? safeNextPath(params.next) : undefined;
   const configured = isFirebaseConfigured();
 

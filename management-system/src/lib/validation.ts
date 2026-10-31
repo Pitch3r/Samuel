@@ -22,13 +22,20 @@ import type { ActionResult } from "@/lib/types";
 
 const text = (max: number) => z.string().trim().max(max, `Keep this under ${max} characters.`);
 const required = (max: number, message = "This field is required.") => text(max).min(1, message);
+/** True for a real calendar date written as YYYY-MM-DD (rejects 2026-02-30). */
+export function isRealDate(value: string) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const date = new Date(`${value}T12:00:00Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value && value >= "1900-01-01";
+}
+
 const optionalDate = z
   .string()
   .optional()
   .transform((value) => (value ?? "").trim())
-  .refine((value) => value === "" || /^\d{4}-\d{2}-\d{2}$/.test(value), "Use a valid date.")
+  .refine((value) => value === "" || isRealDate(value), "Use a valid date.")
   .transform((value) => value || null);
-const isoDate = z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, "Choose a date.");
+const isoDate = z.string().trim().refine(isRealDate, "Choose a valid date.");
 const optionalNumber = (min: number, max: number) =>
   z
     .string()
@@ -38,8 +45,9 @@ const optionalNumber = (min: number, max: number) =>
     .refine((value) => value === null || (Number.isFinite(value) && value >= min && value <= max), `Enter a number between ${min} and ${max}.`);
 const listField = z
   .string()
+  .max(2000, "Keep this list shorter.")
   .default("")
-  .transform((value) => splitList(value));
+  .transform((value) => splitList(value).slice(0, 30).map((item) => item.slice(0, 80)));
 const checkbox = z
   .string()
   .optional()
@@ -289,7 +297,7 @@ export function parseMilestoneLines(value: string) {
     .slice(0, 30)
     .map((line) => {
       const [title, date] = line.split("|").map((part) => part.trim());
-      return { title: (title ?? "").slice(0, 160), dueDate: date && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : null };
+      return { title: (title ?? "").slice(0, 160), dueDate: date && isRealDate(date) ? date : null };
     })
     .filter((milestone) => milestone.title);
 }

@@ -25,6 +25,8 @@ export function OfficeComputerList({ devices, empty = "No office computer regist
               <p className="font-semibold text-navy">{device.label}</p>
               <Badge tone="good">Approved</Badge>
               {device.assignedUids.length > 1 && <Badge tone="neutral">Shared</Badge>}
+              {device.status === "blocked" && <Badge tone="danger">Blocked</Badge>}
+              {device.status === "pending" && <Badge tone="warning">Waiting for approval</Badge>}
             </div>
             <p className="mt-0.5 text-xs text-slate">
               {device.details.browser} on {device.details.os}

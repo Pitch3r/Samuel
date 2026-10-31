@@ -150,7 +150,7 @@ export default async function AssignmentPage(props: PageProps<"/assignments/[id]
         actions={
           <>
             {isAssignee && !closed && (
-              <ButtonLink href="/timesheet" variant="subtle">
+              <ButtonLink href={`/timesheet?assignment=${assignment.id}#log-time`} variant="subtle">
                 <Timer aria-hidden="true" />
                 Log time
               </ButtonLink>
@@ -391,8 +391,16 @@ export default async function AssignmentPage(props: PageProps<"/assignments/[id]
               description={files.length ? `${plural(files.length, "file")}. Briefs, data, drafts and final deliverables.` : "Briefs, data, drafts and final deliverables."}
             />
             <CardBody className="space-y-4">
-              <FileUpload assignmentId={assignment.id} maxBytes={MAX_UPLOAD_BYTES} defaultKind={viewer.isAdmin && assignment.status === "not_started" ? "brief" : "draft"} />
-              <FileList files={files} viewer={{ uid: viewer.uid, isAdmin: viewer.isAdmin }} deleteAction={deleteFileAction} />
+              {/* Closed work is read-only for employees; files cannot be swapped while under review. */}
+              {(viewer.isAdmin || canWork) && (
+                <FileUpload assignmentId={assignment.id} maxBytes={MAX_UPLOAD_BYTES} defaultKind={viewer.isAdmin && assignment.status === "not_started" ? "brief" : "draft"} />
+              )}
+              <FileList
+                files={files}
+                viewer={{ uid: viewer.uid, isAdmin: viewer.isAdmin }}
+                canRemoveOwn={canWork && assignment.status !== "under_review"}
+                deleteAction={deleteFileAction}
+              />
             </CardBody>
           </Card>
 
@@ -489,7 +497,7 @@ export default async function AssignmentPage(props: PageProps<"/assignments/[id]
               <TimeSummary logs={logs} people={people} showPeople={viewer.isAdmin} />
             </CardBody>
             <CardFooter>
-              <Link href="/timesheet" className="text-sm font-semibold text-blue hover:underline">
+              <Link href={`/timesheet?assignment=${assignment.id}#log-time`} className="text-sm font-semibold text-blue hover:underline">
                 {isAssignee && !closed ? "Log time on the timesheet" : "Open the timesheet"}
               </Link>
             </CardFooter>

@@ -30,9 +30,18 @@ export function isDueWithin(assignment: Assignment, days: number, today = todayI
   return diff >= 0 && diff <= days;
 }
 
-/** Completed on or before the due date (assignments without a due date are not counted either way). */
+/**
+ * Delivered on or before the due date. Delivery is the last submission for
+ * review when there was one (so time waiting for approval is not the
+ * employee's lateness), otherwise the completion date. Assignments without a
+ * due date are not counted either way.
+ */
 export function wasOnTime(assignment: Assignment) {
-  const done = dayOf(assignment.completedAt);
+  const delivered =
+    assignment.submittedAt && assignment.completedAt && assignment.submittedAt <= assignment.completedAt
+      ? assignment.submittedAt
+      : assignment.completedAt;
+  const done = dayOf(delivered);
   if (!done || !assignment.dueDate) return null;
   return done <= assignment.dueDate;
 }
@@ -126,13 +135,16 @@ export function employeeMetrics(
   const myReports = data.reports.filter((report) => report.uid === user.uid);
   // Weeks before the person started are not expected to have reports.
   const startWeek = user.startDate ? startOfWeek(user.startDate) : null;
-  const expectedWeeks = weeksIn(period).filter((week) => !startWeek || week >= startWeek);
+  const candidateWeeks = weeksIn(period).filter((week) => !startWeek || week >= startWeek);
   const coveredWeeks = new Set<string>();
   for (const report of myReports) {
-    for (const weekStart of expectedWeeks) {
-      if (report.periodStart <= addDays(weekStart, 6) && report.periodEnd >= weekStart) coveredWeeks.add(weekStart);
+    for (const weekStart of candidateWeeks) {
+      // A report covers a week when it overlaps its working days (Monday to Friday).
+      if (report.periodStart <= addDays(weekStart, 4) && report.periodEnd >= weekStart) coveredWeeks.add(weekStart);
     }
   }
+  // The current week only counts once its Friday has passed, unless already reported.
+  const expectedWeeks = candidateWeeks.filter((week) => addDays(week, 4) < today || coveredWeeks.has(week));
 
   const avgQuality = average(rated.map((assignment) => assignment.qualityRating ?? 0));
   const activeInPeriod = mine.some((assignment) => {

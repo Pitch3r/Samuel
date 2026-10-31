@@ -26,10 +26,13 @@ export function fileHref(file: Pick<AssignmentFile, "assignmentId" | "id">) {
 export function FileList({
   files,
   viewer,
+  canRemoveOwn = true,
   deleteAction,
 }: {
   files: AssignmentFile[];
   viewer: { uid: string; isAdmin: boolean };
+  /** Whether an employee may remove their own uploads right now (not on closed or submitted work). */
+  canRemoveOwn?: boolean;
   deleteAction: Action;
 }) {
   if (!files.length) return null;
@@ -37,7 +40,7 @@ export function FileList({
     <ul className="divide-y divide-mist rounded-xl border border-mist">
       {files.map((file) => {
         const Icon = iconFor(file);
-        const canDelete = viewer.isAdmin || file.uploadedBy === viewer.uid;
+        const canDelete = viewer.isAdmin || (canRemoveOwn && file.uploadedBy === viewer.uid);
         return (
           <li key={file.id} className="flex items-center gap-3 px-3.5 py-3">
             <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-blue-tint text-blue">

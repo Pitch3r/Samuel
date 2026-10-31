@@ -113,7 +113,10 @@ export async function POST(request: Request, context: RouteContext<"/api/avatar/
   if (!mayChange(viewer, uid)) return reply(403, { ok: false, message: "You can only change your own photo." });
 
   const tooLarge = "Photos can be up to 3 MB.";
-  const declared = Number(request.headers.get("content-length") ?? "0");
+  // Browsers always send Content-Length for a form upload; refusing requests
+  // without it means the size limit holds before anything is read.
+  const declared = Number(request.headers.get("content-length") ?? "NaN");
+  if (!Number.isFinite(declared) || declared <= 0) return reply(411, { ok: false, message: "The upload did not say how large it is. Please try again." });
   if (Number.isFinite(declared) && declared > MAX_BYTES + ENVELOPE_BYTES) return reply(413, { ok: false, message: tooLarge });
 
   const user = await getUser(uid);

@@ -78,6 +78,7 @@ async function account(input: Partial<UserProfile> & { email: string; displayNam
     updatedAt: now,
     lastLoginAt: null,
     lastSeenAt: null,
+    deletedAt: null,
   };
   await db.collection("users").doc(record.uid).set(profile);
   return record.uid;

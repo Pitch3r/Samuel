@@ -5,7 +5,8 @@ import { EXPORTS, exportFilename, isExportType } from "@/components/reports/expo
 import { SHEETS } from "../_lib/builders";
 
 /*
- * GET /api/export/[type]?from=YYYY-MM-DD&to=YYYY-MM-DD (or ?period=this-month)
+ * GET /api/export/[type]?from=YYYY-MM-DD&to=YYYY-MM-DD (or ?period=this-month, &uid= for one
+ * person, and ?period=all on assignments for the full history)
  * CSV downloads for reports and records.
  *  - assignments, performance: administrator only (whole team).
  *  - time, reports, attendance: the administrator gets the whole team; an
@@ -28,12 +29,16 @@ export async function GET(request: Request, context: RouteContext<"/api/export/[
 
   // The first value of each query parameter, as resolvePeriod expects from a page.
   const params: Record<string, string> = {};
-  for (const [key, value] of new URL(request.url).searchParams) if (!(key in params)) params[key] = value;
-  const { period } = resolvePeriod(params, "this-month");
+  for (const [key, value] of new URL(request.url).searchParams) if (!Object.hasOwn(params, key)) params[key] = value;
 
   try {
-    const sheet = await SHEETS[type](viewer, period);
-    return csvResponse(exportFilename(type, period), toCsv(sheet.rows, sheet.columns));
+    const { period } = resolvePeriod(params, "this-month");
+    // ?uid= narrows the administrator's export to one person; employees always get their own.
+    const uid = viewer.isAdmin && params.uid ? params.uid : undefined;
+    const allTime = type === "assignments" && params.period === "all";
+    const sheet = await SHEETS[type](viewer, period, { uid, allTime });
+    const filename = allTime ? `primeresearch-${type}-all.csv` : exportFilename(type, period);
+    return csvResponse(filename, toCsv(sheet.rows, sheet.columns));
   } catch (error) {
     console.error(error);
     return reply(500, "The export could not be prepared. Please try again.");

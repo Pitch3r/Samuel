@@ -94,7 +94,7 @@ function RemoveButton({ device, action }: { device: Device; action: Action }) {
     <ConfirmActionForm
       action={action}
       hidden={{ deviceId: device.id }}
-      confirm={`Remove "${device.label}" from the list? If the computer lock is on, it will need approving again before an employee can sign in on it.`}
+      confirm={`Remove "${device.label}" from the list? Anyone tied to it is freed. Next time it is used it counts as a new computer: it waits for your approval, or in first-sign-in mode it is locked to the next employee who signs in on it.`}
     >
       <button type="submit" className={buttonClasses({ variant: "ghost", size: "sm", className: "text-danger hover:bg-danger-tint" })}>
         <Trash2 aria-hidden="true" />

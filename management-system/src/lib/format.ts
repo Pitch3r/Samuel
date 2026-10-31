@@ -28,6 +28,7 @@ export function fromISODate(value: string) {
 
 export function addDays(isoDate: string, days: number) {
   const date = fromISODate(isoDate);
+  if (Number.isNaN(date.getTime())) return isoDate;
   date.setUTCDate(date.getUTCDate() + days);
   return date.toISOString().slice(0, 10);
 }
@@ -79,7 +80,8 @@ export function startOfYear(isoDate: string) {
 /** Inclusive list of dates from start to end. */
 export function dateRange(start: string, end: string) {
   const dates: string[] = [];
-  for (let d = start; d <= end && dates.length < 800; d = addDays(d, 1)) dates.push(d);
+  // Periods are capped at about three years (period.ts); the guard stops runaway loops.
+  for (let d = start; d <= end && dates.length < 1200; d = addDays(d, 1)) dates.push(d);
   return dates;
 }
 
@@ -110,18 +112,24 @@ const fmtDateTime = new Intl.DateTimeFormat("en-GB", {
 });
 const fmtTime = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: TIME_ZONE });
 
+/** Formats a calendar date, showing the raw text rather than failing on a bad stored value. */
+function safeFormat(formatter: Intl.DateTimeFormat, isoDate: string) {
+  const date = fromISODate(isoDate.slice(0, 10));
+  return Number.isNaN(date.getTime()) ? isoDate : formatter.format(date);
+}
+
 /** "12 Mar 2026" for a calendar date. */
 export function formatDate(isoDate: string | null | undefined, fallback = "No date") {
   if (!isoDate) return fallback;
-  return fmtDate.format(fromISODate(isoDate.slice(0, 10)));
+  return safeFormat(fmtDate, isoDate);
 }
 
 export function formatDateLong(isoDate: string) {
-  return fmtDateLong.format(fromISODate(isoDate));
+  return safeFormat(fmtDateLong, isoDate);
 }
 
 export function formatDayMonth(isoDate: string) {
-  return fmtDayMonth.format(fromISODate(isoDate));
+  return safeFormat(fmtDayMonth, isoDate);
 }
 
 export function formatMonth(isoDate: string) {
@@ -133,7 +141,7 @@ export function formatMonthShort(isoDate: string) {
 }
 
 export function formatWeekdayShort(isoDate: string) {
-  return fmtWeekdayShort.format(fromISODate(isoDate));
+  return safeFormat(fmtWeekdayShort, isoDate);
 }
 
 /** "12 Mar 2026, 14:05" for an instant, in Lusaka time. */
