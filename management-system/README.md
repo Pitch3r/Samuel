@@ -165,7 +165,7 @@ To use your real Firebase project locally instead, copy `.env.example` to `.env.
 | `SETUP_KEY` | 12+ characters. Needed only to create the first administrator at `/setup`. |
 | `FIREBASE_PROJECT_ID`, `FIREBASE_API_KEY`, `FIREBASE_STORAGE_BUCKET` | Firebase project details. Automatic on App Hosting. |
 | `FIREBASE_SERVICE_ACCOUNT` | Service account JSON (or base64 of it). Only needed outside Google Cloud. |
-| `CLIENT_IP_SOURCE` | How to read the visitor's address: `auto` (App Hosting, Vercel), `x-forwarded-for:1` (rightmost entry), or a header name such as `cf-connecting-ip`. |
+| `CLIENT_IP_SOURCE` | How to read the visitor's address. `auto` (default) uses the address that Firebase App Hosting or Vercel reports. Behind your own reverse proxy (nginx, Caddy) that appends the visitor's address, use `x-forwarded-for:1`. Behind Cloudflare, use `cf-connecting-ip`. Never point it at a header visitors can set themselves. When the address cannot be read it shows as "unknown" and the office network rule refuses everyone. |
 
 ## 10. For developers
 

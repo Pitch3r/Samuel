@@ -305,6 +305,7 @@ export const ACCESS_DENIALS = {
   "device-mismatch": "Your session does not match this computer. Please sign in again.",
   expired: "Your session has ended. Please sign in again.",
   "signed-out": "You have signed out.",
+  "password-changed": "Your password has been changed. Sign in with your new password.",
   "not-configured": "The management system is not connected to Firebase yet. See the setup guide.",
   "auth-error": "Sign-in is unavailable right now. Please try again shortly.",
 } as const;

@@ -33,7 +33,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
 
   const notice = reason
     ? {
-        tone: reason === "signed-out" ? ("success" as const) : reason === "expired" ? ("info" as const) : ("warning" as const),
+        tone: reason === "signed-out" || reason === "password-changed" ? ("success" as const) : reason === "expired" ? ("info" as const) : ("warning" as const),
         text: ACCESS_DENIALS[reason],
       }
     : params.setup === "done"

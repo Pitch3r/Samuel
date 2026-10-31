@@ -50,12 +50,15 @@ export function ScoreRing({
   stroke = 8,
   label,
   sublabel,
+  valueClassName,
 }: {
   value: number | null;
   size?: number;
   stroke?: number;
   label?: string;
   sublabel?: string;
+  /** Larger rings can use a larger number, e.g. "text-4xl". */
+  valueClassName?: string;
 }) {
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
@@ -65,7 +68,7 @@ export function ScoreRing({
     <div className="relative inline-grid place-items-center" style={{ width: size, height: size }}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img" aria-label={`${label ?? "Score"}: ${value ?? "not enough data"}`}>
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--color-mist)" strokeWidth={stroke} />
-        <circle
+        {pct > 0 && <circle
           cx={size / 2}
           cy={size / 2}
           r={r}
@@ -75,11 +78,11 @@ export function ScoreRing({
           strokeLinecap="round"
           strokeDasharray={`${(pct / 100) * c} ${c}`}
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
-        />
+        />}
       </svg>
       <div className="absolute inset-0 grid place-items-center text-center">
         <div>
-          <div className="font-display text-xl leading-none font-bold text-navy">{value ?? "N/A"}</div>
+          <div className={cn("font-display text-xl leading-none font-bold text-navy", valueClassName)}>{value ?? "N/A"}</div>
           {sublabel && <div className="mt-0.5 text-[0.65rem] font-semibold tracking-wide text-slate uppercase">{sublabel}</div>}
         </div>
       </div>

@@ -98,7 +98,7 @@ export interface EmployeeMetrics {
 }
 
 export function employeeMetrics(
-  user: Pick<UserProfile, "uid" | "displayName" | "targets">,
+  user: Pick<UserProfile, "uid" | "displayName" | "targets"> & Partial<Pick<UserProfile, "startDate">>,
   data: { assignments: Assignment[]; timeLogs: TimeLog[]; reports: WorkReport[]; attendance: AttendanceRecord[] },
   period: Period,
   today = todayISO(),
@@ -124,7 +124,9 @@ export function employeeMetrics(
   const completedTarget = Math.max(round(user.targets.monthlyAssignments * months, 1), 0.5);
 
   const myReports = data.reports.filter((report) => report.uid === user.uid);
-  const expectedWeeks = weeksIn(period);
+  // Weeks before the person started are not expected to have reports.
+  const startWeek = user.startDate ? startOfWeek(user.startDate) : null;
+  const expectedWeeks = weeksIn(period).filter((week) => !startWeek || week >= startWeek);
   const coveredWeeks = new Set<string>();
   for (const report of myReports) {
     for (const weekStart of expectedWeeks) {
@@ -133,10 +135,17 @@ export function employeeMetrics(
   }
 
   const avgQuality = average(rated.map((assignment) => assignment.qualityRating ?? 0));
+  const activeInPeriod = mine.some((assignment) => {
+    const created = dayOf(assignment.createdAt) ?? "";
+    const closedAt = assignment.status === "completed" ? dayOf(assignment.completedAt) : null;
+    const closedEarly = assignment.status === "cancelled" ? (dayOf(assignment.updatedAt) ?? "") < period.from : Boolean(closedAt && closedAt < period.from);
+    return created <= period.to && !closedEarly;
+  });
   const parts: ScoreParts = {
     onTime: timed.length ? onTime / timed.length : null,
     quality: avgQuality !== null ? avgQuality / 5 : null,
-    throughput: mine.length ? Math.min(completed.length / completedTarget, 1) : null,
+    // Output only counts when the person had work during the period.
+    throughput: activeInPeriod ? Math.min(completed.length / completedTarget, 1) : null,
     reporting: expectedWeeks.length ? coveredWeeks.size / expectedWeeks.length : null,
   };
 

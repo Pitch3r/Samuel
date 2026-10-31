@@ -53,8 +53,10 @@ export async function checkRequestAccess(input: {
 
 /** Resolves the signed-in person once per request, applying every check. */
 export const resolveViewer = cache(async (): Promise<ViewerResult> => {
-  if (!isFirebaseConfigured()) return { viewer: null, reason: "not-configured" };
+  // Read the request first, so every page that checks the session is always
+  // rendered per request and never pre-built at build time.
   const jar = await cookies();
+  if (!isFirebaseConfigured()) return { viewer: null, reason: "not-configured" };
   const claims = await verifySessionToken(jar.get(SESSION_COOKIE)?.value);
   if (!claims) return { viewer: null, reason: null };
 

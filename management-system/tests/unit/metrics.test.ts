@@ -122,6 +122,18 @@ describe("delivery", () => {
 });
 
 describe("employee metrics", () => {
+  it("leaves output and reporting out before someone had work or had started", () => {
+    const metrics = employeeMetrics(
+      { ...user, startDate: "2026-12-01" },
+      { assignments: [assignment({ createdAt: "2026-11-15T08:00:00.000Z" })], timeLogs: [], reports: [], attendance: [] },
+      october,
+      "2026-10-31",
+    );
+    expect(metrics.parts.throughput).toBeNull();
+    expect(metrics.parts.reporting).toBeNull();
+    expect(metrics.score).toBeNull();
+  });
+
   const logs: TimeLog[] = [
     { id: "t1", uid: "u1", assignmentId: "1", assignmentTitle: "", assignmentRef: "", date: "2026-10-05", hours: 6, note: "", createdAt: "" },
     { id: "t2", uid: "u1", assignmentId: null, assignmentTitle: "", assignmentRef: "", date: "2026-09-30", hours: 8, note: "", createdAt: "" },

@@ -5,10 +5,13 @@ export function SegmentedBar({
   parts,
   title,
   height = 14,
+  legend = true,
 }: {
   parts: { label: string; value: number; color: string }[];
   title: string;
   height?: number;
+  /** Turn off when the values are listed beside the bar anyway. */
+  legend?: boolean;
 }) {
   const total = parts.reduce((sum, part) => sum + part.value, 0);
   const visible = parts.filter((part) => part.value > 0);
@@ -22,7 +25,7 @@ export function SegmentedBar({
           <div key={part.label} title={`${part.label}: ${part.value}`} style={{ flexGrow: part.value, background: part.color }} />
         ))}
       </div>
-      <Legend className="mt-3" items={parts.map((part) => ({ label: part.label, color: part.color, value: String(part.value) }))} />
+      {legend && <Legend className="mt-3" items={parts.map((part) => ({ label: part.label, color: part.color, value: String(part.value) }))} />}
     </figure>
   );
 }

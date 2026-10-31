@@ -26,7 +26,7 @@ import {
 
 export type Tone = "neutral" | "navy" | "blue" | "teal" | "gold" | "good" | "warning" | "serious" | "danger";
 
-const tones: Record<Tone, string> = {
+export const TONE_CLASSES: Record<Tone, string> = {
   neutral: "bg-cloud text-slate ring-mist",
   navy: "bg-navy text-white ring-navy",
   blue: "bg-blue-tint text-blue-dark ring-blue/15",
@@ -43,7 +43,7 @@ export function Badge({ tone = "neutral", children, className, icon }: { tone?: 
     <span
       className={cn(
         "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap ring-1 ring-inset [&_svg]:size-3.5",
-        tones[tone],
+        TONE_CLASSES[tone],
         className,
       )}
     >
@@ -63,7 +63,7 @@ export const STATUS_TONES: Record<AssignmentStatus, Tone> = {
   cancelled: "neutral",
 };
 
-const STATUS_ICONS: Record<AssignmentStatus, ReactNode> = {
+export const STATUS_ICONS: Record<AssignmentStatus, ReactNode> = {
   not_started: <Circle aria-hidden="true" />,
   in_progress: <CircleDot aria-hidden="true" />,
   under_review: <Hourglass aria-hidden="true" />,

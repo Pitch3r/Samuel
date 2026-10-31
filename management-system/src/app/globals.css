@@ -245,6 +245,20 @@
     background: white;
   }
 
+  .overflow-x-auto {
+    overflow: visible !important;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 0.4rem 0.45rem;
+    font-size: 0.6875rem;
+  }
+
+  .data-table th {
+    white-space: normal;
+  }
+
   .print-area {
     box-shadow: none !important;
     border: 0 !important;

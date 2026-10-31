@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
+import { useWidth } from "@/components/charts/use-width";
 import { cn } from "@/lib/utils";
 import { formatTick, niceTicks, seriesColor, type SeriesSlot } from "@/components/charts/scale";
 import { Legend } from "@/components/charts/legend";
@@ -16,6 +17,7 @@ export function LineChart({
   title,
   className,
   maxValue,
+  integer = false,
 }: {
   labels: string[];
   series: LineSeries[];
@@ -24,12 +26,14 @@ export function LineChart({
   title: string;
   className?: string;
   maxValue?: number;
+  /** Whole-number axis ticks, for counts. */
+  integer?: boolean;
 }) {
   const [active, setActive] = useState<number | null>(null);
+  const [frameRef, width] = useWidth<HTMLElement>();
   const id = useId();
   const peak = maxValue ?? Math.max(...series.flatMap((s) => s.values), 0);
-  const { max, ticks } = niceTicks(peak);
-  const width = 640;
+  const { max, ticks } = niceTicks(peak, 4, { integer });
   const padLeft = 36;
   const padRight = 16;
   const padTop = 12;
@@ -38,10 +42,10 @@ export function LineChart({
   const plotH = height - padTop - padBottom;
   const x = (i: number) => padLeft + (labels.length <= 1 ? plotW / 2 : (i / (labels.length - 1)) * plotW);
   const y = (value: number) => padTop + plotH - (value / max) * plotH;
-  const labelEvery = Math.ceil(labels.length / 8);
+  const labelEvery = Math.max(1, Math.ceil(labels.length / Math.max(Math.floor(plotW / 56), 2)));
 
   return (
-    <figure className={cn("relative", className)}>
+    <figure ref={frameRef} className={cn("relative", className)}>
       {series.length > 1 && <Legend className="mb-3" items={series.map((s) => ({ label: s.label, color: seriesColor(s.slot) }))} />}
       <svg
         viewBox={`0 0 ${width} ${height}`}
@@ -117,7 +121,8 @@ export function LineChart({
           </ul>
         </div>
       )}
-      <table className="sr-only">
+      <div className="sr-only">
+      <table>
         <caption>{title}</caption>
         <thead>
           <tr>
@@ -140,6 +145,7 @@ export function LineChart({
           ))}
         </tbody>
       </table>
+      </div>
     </figure>
   );
 }

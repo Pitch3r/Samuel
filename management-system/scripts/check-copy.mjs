@@ -9,7 +9,7 @@ import path from "node:path";
 const ROOTS = ["src", "scripts", "README.md"];
 const EXTENSIONS = new Set([".ts", ".tsx", ".js", ".mjs", ".css", ".md", ".json", ".txt", ".webmanifest"]);
 const SKIP_DIRS = new Set(["node_modules", ".next", "fonts"]);
-const FORBIDDEN = /[–—]/;
+const FORBIDDEN = /[\u2013\u2014]/;
 
 function* walk(target) {
   let stats;
@@ -34,7 +34,7 @@ for (const root of ROOTS) {
     const lines = readFileSync(file, "utf8").split("\n");
     lines.forEach((line, index) => {
       if (FORBIDDEN.test(line)) {
-        const char = line.match(FORBIDDEN)[0] === "—" ? "em dash" : "en dash";
+        const char = line.match(FORBIDDEN)[0] === "\u2014" ? "em dash" : "en dash";
         problems.push(`${file}:${index + 1}: ${char}: ${line.trim().slice(0, 120)}`);
       }
     });

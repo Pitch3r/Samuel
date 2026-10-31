@@ -60,7 +60,7 @@ export async function currentDeviceId() {
   return verifyDeviceToken((await cookies()).get(DEVICE_COOKIE)?.value);
 }
 
-function deviceDetails(userAgentString: string, client: SignInInput["client"]): DeviceDetails {
+export function deviceDetails(userAgentString: string, client: SignInInput["client"]): DeviceDetails {
   const ua = describeUserAgent(userAgentString);
   const text = (value: unknown, max = 80) => (typeof value === "string" ? value.slice(0, max) : "");
   const num = (value: unknown) => (typeof value === "number" && Number.isFinite(value) ? value : null);

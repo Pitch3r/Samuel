@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { Logo } from "@/components/brand/logo";
 import { ButtonLink } from "@/components/ui/button";
 import { Callout } from "@/components/ui/callout";
@@ -10,6 +11,8 @@ import { SetupForm } from "./setup-form";
 export const metadata: Metadata = { title: "First-time setup" };
 
 export default async function SetupPage() {
+  // Always render on request: this page reads live Firestore state.
+  await connection();
   const configured = isFirebaseConfigured();
   const admins = configured ? await countAdmins().catch(() => null) : null;
   const keySet = (process.env.SETUP_KEY?.trim().length ?? 0) >= 12;

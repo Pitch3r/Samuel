@@ -3,6 +3,7 @@
 import {
   createContext,
   useActionState,
+  useCallback,
   useContext,
   useEffect,
   useId,
@@ -47,36 +48,81 @@ export function ActionForm<S extends ActionResult<unknown>>({
   id?: string;
   encType?: string;
 }) {
-  const [state, formAction, pending] = useActionState<S | null, FormData>(action, null);
   const formRef = useRef<HTMLFormElement>(null);
-  const onSuccessRef = useRef(onSuccess);
+  const allowReset = useRef(false);
+  const latest = useRef({ action, successMessage, onSuccess, resetOnSuccess });
 
   useEffect(() => {
-    onSuccessRef.current = onSuccess;
+    latest.current = { action, successMessage, onSuccess, resetOnSuccess };
   });
 
-  useEffect(() => {
-    if (!state) return;
-    if (state.ok) {
-      const message = state.message ?? successMessage;
+  /*
+   * Feedback is raised as soon as the action resolves rather than from an
+   * effect, because a successful action often refreshes the page in a way
+   * that removes this form (a deleted row, a closed panel) before any effect
+   * could run.
+   */
+  const run = useCallback(async (state: S | null, formData: FormData) => {
+    const current = latest.current;
+    const result = await current.action(state, formData);
+    if (!result) return result;
+    if (result.ok) {
+      const message = result.message ?? current.successMessage;
       if (message) toast.success(message);
-      if (resetOnSuccess) formRef.current?.reset();
-      onSuccessRef.current?.(state);
+      allowReset.current = current.resetOnSuccess;
+      current.onSuccess?.(result);
     } else {
-      toast.error(state.message);
-      const firstInvalid = formRef.current?.querySelector<HTMLElement>("[aria-invalid='true']");
-      firstInvalid?.focus();
+      toast.error(result.message);
+      allowReset.current = false;
     }
-  }, [state, resetOnSuccess, successMessage]);
+    return result;
+  }, []);
+
+  const [state, formAction, pending] = useActionState<S | null, FormData>(run, null);
+
+  useEffect(() => {
+    if (state && !state.ok) {
+      formRef.current?.querySelector<HTMLElement>("[aria-invalid='true']")?.focus();
+    }
+  }, [state]);
 
   const errors = state && !state.ok ? (state.fieldErrors ?? {}) : {};
   return (
     <FormContext value={{ errors, pending }}>
-      <form ref={formRef} action={formAction} className={className} id={id} encType={encType} noValidate>
+      <form
+        ref={formRef}
+        action={formAction}
+        className={className}
+        id={id}
+        encType={encType}
+        noValidate
+        // React resets a form after every action, which would wipe what was typed
+        // when validation fails. Only allow it after a success with resetOnSuccess.
+        onReset={(event) => {
+          if (!allowReset.current) event.preventDefault();
+          allowReset.current = false;
+        }}
+      >
         {children}
       </form>
     </FormContext>
   );
+}
+
+/**
+ * Keeps a plain <form>'s values after React's automatic post-action reset.
+ * ActionForm already does this; use it only in hand-built forms.
+ */
+export function KeepValuesAfterSubmit() {
+  const ref = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    const form = ref.current?.closest("form");
+    if (!form) return;
+    const keep = (event: Event) => event.preventDefault();
+    form.addEventListener("reset", keep);
+    return () => form.removeEventListener("reset", keep);
+  }, []);
+  return <span ref={ref} hidden />;
 }
 
 export function useFieldError(name?: string) {

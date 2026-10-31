@@ -24,14 +24,16 @@ const text = (max: number) => z.string().trim().max(max, `Keep this under ${max}
 const required = (max: number, message = "This field is required.") => text(max).min(1, message);
 const optionalDate = z
   .string()
-  .trim()
-  .regex(/^(\d{4}-\d{2}-\d{2})?$/, "Use a valid date.")
+  .optional()
+  .transform((value) => (value ?? "").trim())
+  .refine((value) => value === "" || /^\d{4}-\d{2}-\d{2}$/.test(value), "Use a valid date.")
   .transform((value) => value || null);
 const isoDate = z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, "Choose a date.");
 const optionalNumber = (min: number, max: number) =>
   z
     .string()
-    .trim()
+    .optional()
+    .transform((value) => (value ?? "").trim())
     .transform((value) => (value === "" ? null : Number(value.replace(/,/g, ""))))
     .refine((value) => value === null || (Number.isFinite(value) && value >= min && value <= max), `Enter a number between ${min} and ${max}.`);
 const listField = z

@@ -65,9 +65,10 @@ export function signingKey(): Uint8Array {
 
 /**
  * How to find the visitor's IP address behind the hosting platform's proxy.
- *  - "auto" (default): Firebase App Hosting's x-fah-client-ip, then Vercel's
- *    x-real-ip, then the last address in x-forwarded-for.
- *  - "x-forwarded-for:N" uses the Nth address from the right (1 = the last one).
+ *  - "auto" (default): Firebase App Hosting's x-fah-client-ip or Vercel's
+ *    x-real-ip, only when running on that platform; otherwise "unknown".
+ *  - "x-forwarded-for:N" uses the Nth address from the right (1 = the last one),
+ *    for a reverse proxy you run (nginx, Caddy) that appends the client address.
  *  - Any other value is read as a header name, for example "cf-connecting-ip".
  * The administrator's Office access page shows what was detected. See README.
  */

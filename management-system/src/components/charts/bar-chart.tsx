@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
+import { useWidth } from "@/components/charts/use-width";
 import { cn } from "@/lib/utils";
 import { formatTick, niceTicks, seriesColor, type SeriesSlot } from "@/components/charts/scale";
 import { Legend } from "@/components/charts/legend";
@@ -22,6 +23,7 @@ export function BarChart({
   title,
   className,
   highlightLast = false,
+  integer = false,
 }: {
   rows: BarRow[];
   series: BarSeries[];
@@ -31,26 +33,30 @@ export function BarChart({
   title: string;
   className?: string;
   highlightLast?: boolean;
+  /** Whole-number axis ticks, for counts. */
+  integer?: boolean;
 }) {
   const [active, setActive] = useState<number | null>(null);
+  const [frameRef, width] = useWidth<HTMLElement>();
   const id = useId();
   const totals = rows.map((row) => series.reduce((total, s) => total + (row.values[s.key] ?? 0), 0));
   const peak = stacked ? Math.max(...totals, 0) : Math.max(...rows.flatMap((row) => series.map((s) => row.values[s.key] ?? 0)), 0);
-  const { max, ticks } = niceTicks(peak);
+  const { max, ticks } = niceTicks(peak, 4, { integer });
 
   const padLeft = 36;
   const padBottom = 28;
   const padTop = 12;
-  const width = 640;
   const plotW = width - padLeft - 8;
   const plotH = height - padBottom - padTop;
   const band = plotW / Math.max(rows.length, 1);
   const groupCount = stacked ? 1 : series.length;
   const barW = Math.min(24, (band * 0.7) / groupCount - (groupCount > 1 ? 2 : 0));
   const y = (value: number) => padTop + plotH - (value / max) * plotH;
+  // Skip some axis labels when the columns are too narrow to fit them all.
+  const labelEvery = Math.max(1, Math.ceil(40 / Math.max(band, 1)));
 
   return (
-    <figure className={cn("relative", className)}>
+    <figure ref={frameRef} className={cn("relative", className)}>
       {series.length > 1 && <Legend className="mb-3" items={series.map((s) => ({ label: s.label, color: seriesColor(s.slot) }))} />}
       <svg viewBox={`0 0 ${width} ${height}`} className="w-full overflow-visible" role="img" aria-labelledby={`${id}-title`} onMouseLeave={() => setActive(null)}>
         <title id={`${id}-title`}>{title}</title>
@@ -89,9 +95,11 @@ export function BarChart({
                   />
                 );
               })}
-              <text x={center} y={height - 8} textAnchor="middle" className={cn("text-[11px]", isActive ? "fill-navy font-semibold" : "fill-slate")}>
-                {row.label}
-              </text>
+              {(i % labelEvery === 0 || isActive) && (
+                <text x={center} y={height - 8} textAnchor="middle" className={cn("text-[11px]", isActive ? "fill-navy font-semibold" : "fill-slate")}>
+                  {row.label}
+                </text>
+              )}
             </g>
           );
         })}
@@ -121,7 +129,8 @@ export function BarChart({
           </ul>
         </div>
       )}
-      <table className="sr-only">
+      <div className="sr-only">
+      <table>
         <caption>{title}</caption>
         <thead>
           <tr>
@@ -144,6 +153,7 @@ export function BarChart({
           ))}
         </tbody>
       </table>
+      </div>
     </figure>
   );
 }

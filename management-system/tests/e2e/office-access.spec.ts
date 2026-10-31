@@ -88,7 +88,7 @@ test("office network rule applies at sign-in and on every request", async ({ bro
   await setAccess({ network: { enabled: true, allowed: ["41.72.100.0/24"] } });
 
   const home = await computer(browser, HOME_IP);
-  await expectRefused(await signIn(home, CHANDA), /office network/i);
+  await expectRefused(await signIn(home, CHANDA), /only sign in from the Primeresearch office network/i);
 
   const office = await computer(browser, OFFICE_IP);
   const page = await signIn(office, CHANDA);
@@ -108,7 +108,7 @@ test("office hours rule", async ({ browser }) => {
   // A window that is never open: no working days.
   await setAccess({ hours: { enabled: true, days: [], start: "07:00", end: "19:00" } });
   const pc = await computer(browser);
-  await expectRefused(await signIn(pc, CHANDA), /office hours/i);
+  await expectRefused(await signIn(pc, CHANDA), /only available during office hours/i);
   await pc.close();
 });
 

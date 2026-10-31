@@ -2,7 +2,11 @@ import "server-only";
 import { headers } from "next/headers";
 import { clientIpSource } from "@/lib/env";
 
-/** Reads the visitor's IP address according to CLIENT_IP_SOURCE (see env.ts). */
+/**
+ * Reads the visitor's IP address according to CLIENT_IP_SOURCE (see env.ts).
+ * Returns "unknown" when it cannot be determined, which never matches an
+ * office network rule.
+ */
 export function clientIpFrom(h: Headers): string {
   const source = clientIpSource();
   const forwarded = (h.get("x-forwarded-for") ?? "")
@@ -14,12 +18,10 @@ export function clientIpFrom(h: Headers): string {
 
   let ip: string | undefined;
   if (source === "auto") {
-    ip =
-      h.get("x-fah-client-ip") ??
-      (process.env.VERCEL ? (h.get("x-real-ip") ?? undefined) : undefined) ??
-      fromRight(1) ??
-      h.get("x-real-ip") ??
-      undefined;
+    // Only trust a header the hosting platform itself sets, so a visitor cannot
+    // pick their own address by sending it. On other hosts, set CLIENT_IP_SOURCE.
+    if (process.env.K_SERVICE || process.env.FIREBASE_CONFIG) ip = h.get("x-fah-client-ip") ?? undefined;
+    else if (process.env.VERCEL) ip = h.get("x-real-ip") ?? undefined;
   } else if (source.startsWith("x-forwarded-for")) {
     const n = Number(source.split(":")[1] ?? "1");
     ip = fromRight(Number.isInteger(n) && n > 0 ? n : 1);

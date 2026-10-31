@@ -31,7 +31,9 @@ function credential(): Credential | undefined {
   return applicationDefault();
 }
 
-let firestore: Firestore | undefined;
+// Route handlers and pages are bundled separately but share one firebase-admin
+// instance, so the configured Firestore is kept on globalThis.
+const shared = globalThis as typeof globalThis & { __prmsFirestore?: Firestore };
 
 export function adminApp(): App {
   const existing = getApps().find((app) => app.name === "[DEFAULT]");
@@ -45,10 +47,15 @@ export function adminApp(): App {
 }
 
 export function db(): Firestore {
-  if (firestore) return firestore;
-  firestore = getFirestore(adminApp());
-  firestore.settings({ ignoreUndefinedProperties: true });
-  return firestore;
+  if (shared.__prmsFirestore) return shared.__prmsFirestore;
+  const store = getFirestore(adminApp());
+  try {
+    store.settings({ ignoreUndefinedProperties: true });
+  } catch {
+    // Already configured by another bundle in this process.
+  }
+  shared.__prmsFirestore = store;
+  return store;
 }
 
 export function adminAuth() {

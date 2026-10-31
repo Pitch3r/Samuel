@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 /** Horizontally scrollable wrapper for wide tables on small screens. */
 export function TableWrap({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn("overflow-x-auto", className)}>{children}</div>;
+  return <div className={cn("relative overflow-x-auto", className)}>{children}</div>;
 }
 
 /** Link-based tabs for server-rendered pages. */

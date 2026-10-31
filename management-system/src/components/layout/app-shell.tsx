@@ -105,8 +105,8 @@ export function AppShell({
   );
 
   return (
-    <div className="min-h-dvh lg:grid lg:grid-cols-[16.5rem_minmax(0,1fr)]">
-      <aside className="on-dark sticky top-0 hidden h-dvh flex-col bg-navy lg:flex">
+    <div className="min-h-dvh lg:grid lg:grid-cols-[16.5rem_minmax(0,1fr)] print:block">
+      <aside className="on-dark sticky top-0 hidden h-dvh flex-col bg-navy lg:flex print:hidden">
         <Link href="/dashboard" className="block px-6 pt-6 pb-2">
           <Logo variant="reversed" width={150} priority />
         </Link>
@@ -116,7 +116,7 @@ export function AppShell({
       </aside>
 
       {/* Mobile drawer */}
-      <div className={cn("fixed inset-0 z-40 lg:hidden", open ? "visible" : "invisible")} aria-hidden={!open}>
+      <div className={cn("fixed inset-0 z-40 lg:hidden print:hidden", open ? "visible" : "invisible")} aria-hidden={!open}>
         <div className={cn("absolute inset-0 bg-navy/50 transition-opacity", open ? "opacity-100" : "opacity-0")} onClick={() => setOpen(false)} />
         <aside
           className={cn(

@@ -31,7 +31,7 @@ export function CalendarHeatmap({
   const gap = 3;
   const labels = ["Mon", "", "Wed", "", "Fri", "", ""];
   return (
-    <figure>
+    <figure className="relative">
       <svg
         viewBox={`0 0 ${30 + weeks.length * (cell + gap)} ${7 * (cell + gap)}`}
         className="w-full max-w-full"
@@ -73,7 +73,8 @@ export function CalendarHeatmap({
         ))}
         More
       </div>
-      <table className="sr-only">
+      <div className="sr-only">
+      <table>
         <caption>{title}</caption>
         <tbody>
           {Object.entries(values)
@@ -88,6 +89,7 @@ export function CalendarHeatmap({
             ))}
         </tbody>
       </table>
+      </div>
     </figure>
   );
 }
