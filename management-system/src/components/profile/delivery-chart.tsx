@@ -32,8 +32,8 @@ export function DeliveryChart({ assignments, title = "Completed work" }: { assig
         description={`Assignments completed in each of the last six months, by research track. ${total} in total.`}
       />
       <CardBody>
-        <div className="-mx-1 min-w-0 overflow-x-auto px-1 pb-1 [&_table.sr-only]:right-0">
-          <div className="min-w-[28rem]">
+        <div className="-mx-1 min-w-0 overflow-x-auto px-1 pb-1">
+          <div className="min-w-[17rem]">
             <BarChart rows={rows} series={SERIES} stacked height={200} title={`${title} per month by research track`} highlightLast />
           </div>
         </div>

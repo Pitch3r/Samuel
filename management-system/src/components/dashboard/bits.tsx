@@ -79,17 +79,14 @@ export function Figure({
 }
 
 /**
- * Wrapper for the shared charts, which draw on a fixed 640-unit canvas.
- * - Below `minWidth` the chart scrolls sideways inside its card instead of
- *   shrinking its labels to an unreadable size on phones.
- * - Their screen-reader table is `sr-only`, but a table ignores the 1px width
- *   and widened the page; anchoring it to the right edge sends any excess off
- *   the left side, which never scrolls. It stays available to assistive technology.
+ * Wrapper for the shared charts. They draw at their real width, so this only
+ * scrolls sideways on very narrow screens (below 17rem, or `minWidth` if smaller).
  */
 export function ChartFrame({ children, className, minWidth = "34rem" }: { children: ReactNode; className?: string; minWidth?: string }) {
   return (
-    <div className={cn("-mx-1 min-w-0 overflow-x-auto px-1 pb-1 [&_table.sr-only]:right-0", className)}>
-      <div style={{ minWidth }}>{children}</div>
+    <div className={cn("-mx-1 min-w-0 overflow-x-auto px-1 pb-1", className)}>
+      {/* Charts draw at their real width now, so only scroll on very narrow screens. */}
+      <div style={{ minWidth: `min(${minWidth}, 17rem)` }}>{children}</div>
     </div>
   );
 }
