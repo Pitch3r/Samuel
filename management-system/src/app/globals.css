@@ -1,0 +1,265 @@
+@import "tailwindcss";
+
+/*
+ * Primeresearch design tokens, shared with the Primeresearch Consultants website.
+ * Navy leads, Blue and Slate support, Gold is a single accent per layout,
+ * and Teal appears only in charts and data.
+ */
+@theme {
+  --color-*: initial;
+
+  --color-navy: #0b2447;
+  --color-navy-deep: #071a35;
+  --color-navy-soft: #13325e;
+  --color-blue: #2b67c5;
+  --color-blue-dark: #2257ab;
+  --color-blue-tint: #eaf1fb;
+  --color-gold: #e4ac3f;
+  --color-gold-dark: #cf9628;
+  --color-gold-tint: #fcf4e3;
+  --color-teal: #1b9a8f;
+  --color-teal-dark: #127067;
+  --color-teal-tint: #e6f5f3;
+  --color-charcoal: #1f2933;
+  --color-slate: #5b6b7f;
+  --color-mist: #e3e8ef;
+  --color-cloud: #f6f8fb;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-danger: #b42318;
+  --color-danger-tint: #fdecea;
+
+  /* Status colours. Always shown with an icon and a label, never colour alone. */
+  --color-good: #127a3e;
+  --color-good-tint: #e7f6ec;
+  --color-warning: #a15c00;
+  --color-warning-tint: #fff4e0;
+  --color-serious: #c2410c;
+  --color-serious-tint: #fff0e8;
+
+  /*
+   * Chart series, validated for colour-blind separation on white (adjacent pairs;
+   * the first three also pass for all pairs). Fixed order, never cycled.
+   */
+  --color-series-1: #1b9a8f;
+  --color-series-2: #2b67c5;
+  --color-series-3: #cf9628;
+  --color-series-4: #c2577a;
+  --color-series-5: #7a5bc7;
+
+  --font-sans: var(--font-inter), "Inter", Calibri, Arial, sans-serif;
+  --font-display: var(--font-jakarta), "Plus Jakarta Sans", Arial, sans-serif;
+
+  --radius-card: 1rem;
+  --radius-panel: 1.5rem;
+
+  --shadow-card: 0 1px 2px rgb(11 36 71 / 0.04), 0 8px 24px -14px rgb(11 36 71 / 0.14);
+  --shadow-lift: 0 2px 4px rgb(11 36 71 / 0.05), 0 22px 44px -20px rgb(11 36 71 / 0.28);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-cloud);
+    color: var(--color-charcoal);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    color: var(--color-navy);
+    text-wrap: balance;
+  }
+
+  .on-dark :where(h1, h2, h3, h4) {
+    color: var(--color-white);
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background-color: var(--color-gold-tint);
+    color: var(--color-navy);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-blue);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  .on-dark :focus-visible {
+    outline-color: var(--color-gold);
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    font: inherit;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+}
+
+@layer components {
+  /* Tabular figures for tables and numeric columns. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .field-label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-navy);
+    margin-bottom: 0.375rem;
+  }
+
+  .field-input {
+    display: block;
+    width: 100%;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-mist);
+    background-color: var(--color-white);
+    padding: 0.625rem 0.875rem;
+    font-size: 0.9375rem;
+    color: var(--color-charcoal);
+    transition:
+      border-color 150ms,
+      box-shadow 150ms;
+  }
+
+  .field-input::placeholder {
+    color: color-mix(in srgb, var(--color-slate) 70%, white);
+  }
+
+  .field-input:hover {
+    border-color: color-mix(in srgb, var(--color-slate) 40%, var(--color-mist));
+  }
+
+  .field-input:focus {
+    outline: none;
+    border-color: var(--color-blue);
+    box-shadow: 0 0 0 3px rgb(43 103 197 / 0.16);
+  }
+
+  .field-input[aria-invalid="true"] {
+    border-color: var(--color-danger);
+  }
+
+  .field-input:disabled {
+    background-color: var(--color-cloud);
+    color: var(--color-slate);
+    cursor: not-allowed;
+  }
+
+  select.field-input {
+    appearance: none;
+    padding-right: 2.25rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235b6b7f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+  }
+
+  .field-hint {
+    margin-top: 0.375rem;
+    font-size: 0.8125rem;
+    color: var(--color-slate);
+  }
+
+  .field-error {
+    margin-top: 0.375rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-danger);
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.875rem;
+  }
+
+  .data-table th {
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--color-slate);
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-mist);
+    background-color: var(--color-cloud);
+    white-space: nowrap;
+  }
+
+  .data-table td {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--color-mist);
+    vertical-align: middle;
+  }
+
+  .data-table tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .data-table tbody tr:hover td {
+    background-color: color-mix(in srgb, var(--color-cloud) 70%, white);
+  }
+
+  .prose-plain {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    line-height: 1.65;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+  }
+
+  .print-area {
+    box-shadow: none !important;
+    border: 0 !important;
+  }
+
+  @page {
+    margin: 14mm;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

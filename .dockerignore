@@ -10,3 +10,4 @@ playwright-report
 coverage
 Dockerfile
 .dockerignore
+management-system

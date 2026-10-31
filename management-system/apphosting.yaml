@@ -1,0 +1,26 @@
+# Firebase App Hosting settings for the Primeresearch Management System.
+# FIREBASE_CONFIG and FIREBASE_WEBAPP_CONFIG are provided automatically.
+runConfig:
+  minInstances: 0
+  maxInstances: 2
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 512
+
+env:
+  # Signs session and office-computer cookies. Create it with:
+  #   firebase apphosting:secrets:set session-secret
+  - variable: SESSION_SECRET
+    secret: session-secret
+    availability:
+      - RUNTIME
+  # Needed once, to create the administrator account at /setup:
+  #   firebase apphosting:secrets:set setup-key
+  - variable: SETUP_KEY
+    secret: setup-key
+    availability:
+      - RUNTIME
+  - variable: CLIENT_IP_SOURCE
+    value: auto
+    availability:
+      - RUNTIME

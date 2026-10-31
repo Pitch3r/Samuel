@@ -1,0 +1,12 @@
+rules_version = '2';
+
+// The Primeresearch Management System reads and writes Firestore only from its
+// server, through the Firebase Admin SDK, after checking the session and the
+// office access rules. Browsers are never given direct access.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

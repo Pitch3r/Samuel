@@ -1,0 +1,11 @@
+rules_version = '2';
+
+// Files are uploaded and downloaded only through the management system's server,
+// which checks who may see each assignment. Direct browser access is denied.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

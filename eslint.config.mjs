@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // The management system is a separate app with its own lint setup.
+    "management-system/**",
   ]),
 ]);
 

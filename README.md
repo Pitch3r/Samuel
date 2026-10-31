@@ -166,6 +166,10 @@ The end-to-end suite covers every page, the forms and wizard, the calculator, th
 - [ ] Optionally add real photographs of your team and fieldwork, following the brand photography guidance
 - [ ] Submit `https://your-domain/sitemap.xml` to Google Search Console
 
+## Primeresearch Management System
+
+The `management-system/` folder holds a separate, private app for running the firm's work: corporate and academic assignments, progress tracking, performance scores, timesheets, work reports, attendance, reporting and office-only sign-in for employees. It uses Firebase (Authentication, Firestore and Storage) and is deployed on its own, for example with Firebase App Hosting. See [management-system/README.md](management-system/README.md) for setup and use. The website's checks and Docker image ignore that folder.
+
 ## Project structure
 
 ```
