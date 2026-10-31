@@ -124,7 +124,8 @@ The administrator account is never restricted, so you can manage the system from
 
 - *New or replaced office computer, or a browser that was reset:* in *Team > (employee) > Security* click **Unlock computer binding** (first-sign-in mode), or approve the new computer under *Office access* (registered mode).
 - *The office internet address changes* (some providers change it occasionally): employees will be refused with the network message. At the office, open *Office access* and add the new detected address.
-- *Someone leaves:* suspend their account (they are signed out at once). Their work records stay.
+- *Someone leaves:* suspend their account (they are signed out at once). If you later delete it, their name stays on past work, time and reports, and they are taken off any open assignments (you are told if one is left with nobody assigned). A suspended or deleted login is answered like a wrong password, so nobody can use the sign-in page to find out which accounts exist.
+- *Computer blocked by mistake:* unblock it under *Office access > Computers*. Blocking never frees an employee's computer slot; use **Unlock computer binding** for that.
 
 ## 6. Everyday use
 
@@ -152,7 +153,8 @@ To use your real Firebase project locally instead, copy `.env.example` to `.env.
 
 - All reads and writes go through the app's server, using the Firebase Admin SDK, after the session and office checks. Firestore and Storage rules deny all direct browser access.
 - Passwords are handled only by Firebase Authentication. Sessions are server records, so you can end them (on suspension, password reset or from Office access). Session cookies are signed, `HttpOnly`, and expire after the configured hours.
-- Sign-in attempts are rate limited per email and per address. Every action is written to the audit log.
+- Sign-in attempts are rate limited per email and address, so someone elsewhere cannot lock your account out. Every action is written to the audit log.
+- Completed and cancelled work is read-only for employees (no file changes or time entries) until you reopen it, and files cannot be swapped while work is under review.
 - Files are only served to the administrator and the people assigned to that assignment.
 - **Limits, plainly stated.** The computer check relies on a signed browser cookie. A determined person with access to an office computer could copy its browser profile to another machine. The office network check stops that copy working outside the office. Turn on both checks for the strongest protection. The network check depends on the hosting platform reporting the visitor's real address: confirm under *Office access* that the detected address matches your office's public address (search "what is my IP" on an office computer). Location checks depend on the browser and can be imprecise on desktops.
 - Personal data stays in your own Firebase project. Handle it in line with Zambia's Data Protection Act No. 3 of 2021 (for example: tell staff what is recorded, including attendance, and keep it only as long as needed).
